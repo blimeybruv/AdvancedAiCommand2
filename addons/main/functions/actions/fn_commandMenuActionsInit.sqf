@@ -965,10 +965,10 @@ AIC_fnc_setLoiterTypeActionHandler = {
 };
 
 ["WAYPOINT","Move (default)",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["MOVE","'Move'"]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","Attack (CBA)",["Set Waypoint Type"],AIC_fnc_setWaypointAttackActionHandler,[]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","Defend / Garrison (CBA)",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["DEFEND","'Defend / Garrison'"]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","Hold",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["HOLD","'Hold'"]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","Seek & Destroy",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["SAD","'Seek & Destroy'"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Attack (CBA)",["Set Waypoint Type","Offensive WP Types"],AIC_fnc_setWaypointAttackActionHandler,[]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Seek & Destroy",["Set Waypoint Type","Offensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["SAD","'Seek & Destroy'"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Defend / Garrison (CBA)",["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["DEFEND","'Defend / Garrison'"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Hold",["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["HOLD","'Hold'"]] call AIC_fnc_addCommandMenuAction;
 
 
 
@@ -984,62 +984,62 @@ private _labelUnloadSubSubMenuLandingPrecicely = "Land & Unload precicely";
 private _labelUnloadGroupCrewAndPassenger = "Unload this groups crew & passengers";
 
 // No aircraft
-["WAYPOINT",_labelUnloadGroupCrewAndPassenger,["Set Waypoint Type", _labelUnloadSubMenu],AIC_fnc_setWaypointTypeUnloadActionHandler,["GETOUT",_labelUnloadGroupCrewAndPassenger],{(call AIC_fnc_hasVehicleAssigned) && !(call AIC_fnc_hasAircraftAssigned)}] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadGroupCrewAndPassenger,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu],AIC_fnc_setWaypointTypeUnloadActionHandler,["GETOUT",_labelUnloadGroupCrewAndPassenger],{(call AIC_fnc_hasVehicleAssigned) && !(call AIC_fnc_hasAircraftAssigned)}] call AIC_fnc_addCommandMenuAction;
 
 // Is aircraft
-["WAYPOINT",_labelUnloadGroupCrewAndPassenger,["Set Waypoint Type", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingNearby],AIC_fnc_setWaypointTypeUnloadActionHandler,["GETOUT",_labelUnloadGroupCrewAndPassenger],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT",_labelUnloadGroupCrewAndPassenger,["Set Waypoint Type", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingPrecicely],AIC_fnc_setWaypointTypeUnloadActionHandler,["GETOUT",_labelUnloadGroupCrewAndPassenger,true],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadGroupCrewAndPassenger,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingNearby],AIC_fnc_setWaypointTypeUnloadActionHandler,["GETOUT",_labelUnloadGroupCrewAndPassenger],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadGroupCrewAndPassenger,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingPrecicely],AIC_fnc_setWaypointTypeUnloadActionHandler,["GETOUT",_labelUnloadGroupCrewAndPassenger,true],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
 
 
 private _labelUnloadGroupPassengers = "Unload this groups passengers";
 
 // No aircraft
-["WAYPOINT",_labelUnloadGroupPassengers,["Set Waypoint Type", _labelUnloadSubMenu],AIC_fnc_setWaypointTypeUnloadActionHandler,["UNLOAD",_labelUnloadGroupPassengers],{call AIC_fnc_hasVehicleAssigned && !(call AIC_fnc_hasAircraftAssigned)}] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadGroupPassengers,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu],AIC_fnc_setWaypointTypeUnloadActionHandler,["UNLOAD",_labelUnloadGroupPassengers],{call AIC_fnc_hasVehicleAssigned && !(call AIC_fnc_hasAircraftAssigned)}] call AIC_fnc_addCommandMenuAction;
 
 // Is aircraft
-["WAYPOINT",_labelUnloadGroupPassengers,["Set Waypoint Type", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingNearby],AIC_fnc_setWaypointTypeUnloadActionHandler,["UNLOAD",_labelUnloadGroupPassengers],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT",_labelUnloadGroupPassengers,["Set Waypoint Type", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingPrecicely],AIC_fnc_setWaypointTypeUnloadActionHandler,["UNLOAD",_labelUnloadGroupPassengers,true],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadGroupPassengers,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingNearby],AIC_fnc_setWaypointTypeUnloadActionHandler,["UNLOAD",_labelUnloadGroupPassengers],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadGroupPassengers,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingPrecicely],AIC_fnc_setWaypointTypeUnloadActionHandler,["UNLOAD",_labelUnloadGroupPassengers,true],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
 
 
 private _labelUnloadOtherGroupPassengers = "Unload other groups passengers (not crew positions)";
 
 // No aircraft
-["WAYPOINT",_labelUnloadOtherGroupPassengers,["Set Waypoint Type", _labelUnloadSubMenu],AIC_fnc_setWaypointTypeUnloadActionHandler,["TR UNLOAD",_labelUnloadOtherGroupPassengers],{call AIC_fnc_hasGroupCargo && !(call AIC_fnc_hasAircraftAssigned)}] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadOtherGroupPassengers,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu],AIC_fnc_setWaypointTypeUnloadActionHandler,["TR UNLOAD",_labelUnloadOtherGroupPassengers],{call AIC_fnc_hasGroupCargo && !(call AIC_fnc_hasAircraftAssigned)}] call AIC_fnc_addCommandMenuAction;
 
 // Is aircraft
-["WAYPOINT",_labelUnloadOtherGroupPassengers,["Set Waypoint Type", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingNearby],AIC_fnc_setWaypointTypeUnloadActionHandler,["TR UNLOAD",_labelUnloadOtherGroupPassengers],{call AIC_fnc_hasGroupCargo && call AIC_fnc_hasAircraftAssigned}] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT",_labelUnloadOtherGroupPassengers,["Set Waypoint Type", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingPrecicely],AIC_fnc_setWaypointTypeUnloadActionHandler,["TR UNLOAD",_labelUnloadOtherGroupPassengers,true],{call AIC_fnc_hasGroupCargo && call AIC_fnc_hasAircraftAssigned}] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadOtherGroupPassengers,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingNearby],AIC_fnc_setWaypointTypeUnloadActionHandler,["TR UNLOAD",_labelUnloadOtherGroupPassengers],{call AIC_fnc_hasGroupCargo && call AIC_fnc_hasAircraftAssigned}] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelUnloadOtherGroupPassengers,["Set Waypoint Type", "Special WP Types", _labelUnloadSubMenu, _labelUnloadSubSubMenuLandingPrecicely],AIC_fnc_setWaypointTypeUnloadActionHandler,["TR UNLOAD",_labelUnloadOtherGroupPassengers,true],{call AIC_fnc_hasGroupCargo && call AIC_fnc_hasAircraftAssigned}] call AIC_fnc_addCommandMenuAction;
 
 
 /*
 	WP Type "Land"
 */
 private _labelLandNearby = "Land nearby (search spot within 500m)";
-["WAYPOINT",_labelLandNearby,["Set Waypoint Type","Land"],AIC_fnc_setWaypointTypeLandNearbyActionHandler,[_labelLandNearby],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelLandNearby,["Set Waypoint Type", "Special WP Types", "Land"],AIC_fnc_setWaypointTypeLandNearbyActionHandler,[_labelLandNearby],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
 
 private _labelLandPrecise = "Land precisely (as close as possible)";
-["WAYPOINT",_labelLandPrecise,["Set Waypoint Type","Land"],AIC_fnc_setWaypointTypeLandPreciseActionHandler,[_labelLandPrecise],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelLandPrecise,["Set Waypoint Type", "Special WP Types", "Land"],AIC_fnc_setWaypointTypeLandPreciseActionHandler,[_labelLandPrecise],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
 
 
 /*
 	WP Type "Loiter"
 */
-["WAYPOINT","10M Radius",["Set Waypoint Type","Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[10,true]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","100M Radius",["Set Waypoint Type","Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[100,true]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","250M Radius",["Set Waypoint Type","Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[250,true]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","500M Radius",["Set Waypoint Type","Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[500,true]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","1000M Radius",["Set Waypoint Type","Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[1000,true]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","2000M Radius",["Set Waypoint Type","Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[2000,true]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","3000M Radius",["Set Waypoint Type","Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[3000,true]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","4000M Radius",["Set Waypoint Type","Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[4000,true]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","10M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[10,false]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","100M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[100,false]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","250M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[250,false]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","500M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[500,false]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","1000M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[1000,false]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","2000M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[2000,false]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","3000M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[3000,false]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","4000M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[4000,false]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","10M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[10,true]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","100M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[100,true]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","250M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[250,true]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","500M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[500,true]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","1000M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[1000,true]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","2000M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[2000,true]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","3000M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[3000,true]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","4000M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[4000,true]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","10M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[10,false]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","100M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[100,false]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","250M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[250,false]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","500M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[500,false]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","1000M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[1000,false]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","2000M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[2000,false]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","3000M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[3000,false]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","4000M Radius",["Set Waypoint Type", "Special WP Types", "Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[4000,false]] call AIC_fnc_addCommandMenuAction;
 
 
 // Wrapper for both AGL and ASL fly-in height — used as completion-statement snippet
