@@ -41,7 +41,9 @@ _titleCtrl ctrlSetPosition [
 	0.36 * safeZoneW,
 	0.03 * safeZoneH
 ];
-_titleCtrl ctrlSetStructuredText parseText format ["<t align='center' font='PuristaMedium' size='1.15'>%1</t>", _title];
+_titleCtrl ctrlSetText _title;
+_titleCtrl ctrlSetTextColor [1, 1, 1, 1];
+_titleCtrl ctrlSetFont "PuristaMedium";
 _titleCtrl ctrlCommit 0;
 
 // --- Info label ("Attack Radius (m)") ---
@@ -52,7 +54,9 @@ _info ctrlSetPosition [
 	0.34 * safeZoneW,
 	0.03 * safeZoneH
 ];
-_info ctrlSetStructuredText parseText "<t align='center' font='PuristaMedium' size='0.85'>Attack Radius (m)</t>";
+_info ctrlSetText "Attack Radius (m)";
+_info ctrlSetTextColor [0.67, 0.67, 0.67, 1];
+_info ctrlSetFont "PuristaMedium";
 _info ctrlCommit 0;
 
 // --- Edit field ---

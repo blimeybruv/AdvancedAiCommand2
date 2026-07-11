@@ -28,7 +28,7 @@ _bg ctrlSetPosition [
 	0.32 * safeZoneW + safeZoneX,
 	0.35 * safeZoneH + safeZoneY,
 	0.36 * safeZoneW,
-	0.15 * safeZoneH
+	0.20 * safeZoneH
 ];
 _bg ctrlSetBackgroundColor [0.1, 0.1, 0.1, 0.92];
 _bg ctrlCommit 0;
@@ -37,18 +37,20 @@ _bg ctrlCommit 0;
 private _titleCtrl = _display ctrlCreate ["RscText", -1];
 _titleCtrl ctrlSetPosition [
 	0.32 * safeZoneW + safeZoneX,
-	0.32 * safeZoneH + safeZoneY,
+	0.36 * safeZoneH + safeZoneY,
 	0.36 * safeZoneW,
 	0.03 * safeZoneH
 ];
-_titleCtrl ctrlSetStructuredText parseText format ["<t align='center' font='PuristaMedium' size='1.15'>%1</t>", _title];
+_titleCtrl ctrlSetText _title;
+_titleCtrl ctrlSetTextColor [1, 1, 1, 1];
+_titleCtrl ctrlSetFont "PuristaMedium";
 _titleCtrl ctrlCommit 0;
 
 // --- Edit field ---
 private _edit = _display ctrlCreate ["RscEdit", -1];
 _edit ctrlSetPosition [
 	0.33 * safeZoneW + safeZoneX,
-	0.37 * safeZoneH + safeZoneY,
+	0.40 * safeZoneH + safeZoneY,
 	0.34 * safeZoneW,
 	0.04 * safeZoneH
 ];
@@ -65,18 +67,20 @@ uiNamespace setVariable ["AIC_HeightInput_Edit", _edit];
 private _info = _display ctrlCreate ["RscText", -1];
 _info ctrlSetPosition [
 	0.33 * safeZoneW + safeZoneX,
-	0.42 * safeZoneH + safeZoneY,
+	0.45 * safeZoneH + safeZoneY,
 	0.34 * safeZoneW,
 	0.03 * safeZoneH
 ];
-_info ctrlSetStructuredText parseText "<t align='center' font='PuristaMedium' size='0.8' color='#aaaaaa'>Height in meters (e.g. 100)</t>";
+_info ctrlSetText "Height in meters (e.g. 100)";
+_info ctrlSetTextColor [0.67, 0.67, 0.67, 1];
+_info ctrlSetFont "PuristaMedium";
 _info ctrlCommit 0;
 
 // --- OK Button ---
 private _btnOk = _display ctrlCreate ["RscButton", -1];
 _btnOk ctrlSetPosition [
 	0.38 * safeZoneW + safeZoneX,
-	0.47 * safeZoneH + safeZoneY,
+	0.49 * safeZoneH + safeZoneY,
 	0.11 * safeZoneW,
 	0.04 * safeZoneH
 ];
@@ -98,7 +102,7 @@ _btnOk ctrlAddEventHandler ["ButtonClick", {
 private _btnCancel = _display ctrlCreate ["RscButton", -1];
 _btnCancel ctrlSetPosition [
 	0.50 * safeZoneW + safeZoneX,
-	0.47 * safeZoneH + safeZoneY,
+	0.49 * safeZoneH + safeZoneY,
 	0.11 * safeZoneW,
 	0.04 * safeZoneH
 ];
