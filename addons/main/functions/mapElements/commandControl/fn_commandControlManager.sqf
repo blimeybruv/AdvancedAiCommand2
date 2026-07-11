@@ -266,6 +266,19 @@ if (isServer) then {
 								[AIC_LOGLEVEL_DEBUG, format["Setting up defend/garrison waypoint with CBA_fnc_taskDefend. _defendRadius=%1.", _defendRadius]] call AIC_fnc_log;
 							};
 
+							// ATTACK type: replace with SAD waypoint + CBA_fnc_taskAttack as completion statement
+							// Must be handled BEFORE setWaypointType since "ATTACK" is not a valid Arma enum value
+							private _wpAttackStatement = "";
+							if (_wpType == "ATTACK") then {
+								_wpType = "SAD";
+								private _attackRadius = 100;
+								if (!isNil "_wpCompletionRadius") then {
+									_attackRadius = _wpCompletionRadius;
+								};
+								_wpAttackStatement = format ["[group this, group this, %1] call CBA_fnc_taskAttack;", _attackRadius];
+								[AIC_LOGLEVEL_DEBUG, format["Setting up attack waypoint with CBA_fnc_taskAttack. _attackRadius=%1.", _attackRadius]] call AIC_fnc_log;
+							};
+
 							// Set waypoint type
 							_wpObject setWaypointType _wpType;
 
@@ -317,6 +330,10 @@ if (isServer) then {
 							// Prepend the defend statement (runs before the disable and original statement)
 							if (_wpDefendStatement != "") then {
 								_wpStatement = _wpDefendStatement + _wpStatement;
+							};
+							// Prepend the attack statement (runs before the disable and original statement)
+							if (_wpAttackStatement != "") then {
+								_wpStatement = _wpAttackStatement + _wpStatement;
 							};
 
 							// Wp statement - do this at the end to ensure the statement includes everything.

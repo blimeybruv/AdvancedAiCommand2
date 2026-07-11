@@ -921,6 +921,26 @@ AIC_fnc_setWaypointTypeLandPreciseActionHandler = {
 	hint ("Type set to '" + _label + "'.");
 };
 
+AIC_fnc_setWaypointAttackActionHandler = {
+	params ["_menuParams","_actionParams"];
+	_menuParams params ["_groupControlId","_waypointId"];
+
+	private _radius = ["Enter Attack Radius"] call AIC_fnc_showRadiusInputDialog;
+	if (_radius <= 0) exitWith {
+		[AIC_LOGLEVEL_DEBUG, "AIC_fnc_setWaypointAttackActionHandler - User cancelled radius input."] call AIC_fnc_log;
+	};
+
+	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
+
+	_waypoint set [AIC_Waypoint_ArrayIndex_Type, "ATTACK"];
+	_waypoint set [AIC_Waypoint_ArrayIndex_CompletionRadius, _radius];
+	[_group, _waypoint] call AIC_fnc_setWaypoint;
+	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
+
+	hint ("Type set to 'Attack' at " + str _radius + " meter radius");
+};
+
 AIC_fnc_setLoiterTypeActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId","_waypointId"];
@@ -945,9 +965,12 @@ AIC_fnc_setLoiterTypeActionHandler = {
 };
 
 ["WAYPOINT","Move (default)",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["MOVE","'Move'"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Attack (CBA)",["Set Waypoint Type"],AIC_fnc_setWaypointAttackActionHandler,[]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Defend / Garrison (CBA)",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["DEFEND","'Defend / Garrison'"]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Hold",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["HOLD","'Hold'"]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Seek & Destroy",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["SAD","'Seek & Destroy'"]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","Defend / Garrison",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["DEFEND","'Defend / Garrison'"]] call AIC_fnc_addCommandMenuAction;
+
+
 
 /*
 	WP Type "Unload"
