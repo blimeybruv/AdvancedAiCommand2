@@ -334,7 +334,7 @@ AIC_fnc_terminateRemoteView = {
 	["RemoteControl",["","Remote View Terminated"]] call BIS_fnc_showNotification;
 };
 
-["GROUP","Remote View",["Remote"],AIC_fnc_remoteViewActionHandler,[],{
+["GROUP","Remote View",["Group","Remote"],AIC_fnc_remoteViewActionHandler,[],{
 	params ["_groupControlId"];
 	private ["_group"];
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
@@ -404,7 +404,7 @@ AIC_fnc_terminateRemoteControl = {
 	["RemoteControl",["","Remote Control Terminated"]] call BIS_fnc_showNotification;
 };
 
-["GROUP","Remote Control",["Remote"],AIC_fnc_remoteControlActionHandler,[],{
+["GROUP","Remote Control",["Group","Remote"],AIC_fnc_remoteControlActionHandler,[],{
 	params ["_groupControlId"];
 	private ["_group"];
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
@@ -440,15 +440,29 @@ AIC_fnc_setGroupColorActionHandler = {
 	hint ("Color set to '" + (_color select 0) + "'.");
 };
 
-["GROUP","Red",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_RED]] call AIC_fnc_addCommandMenuAction;
-["GROUP","Green",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_GREEN]] call AIC_fnc_addCommandMenuAction;
-["GROUP","Blue",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_BLUE]] call AIC_fnc_addCommandMenuAction;
-["GROUP","Yellow",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_YELLOW]] call AIC_fnc_addCommandMenuAction;
-["GROUP","Purple",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_PURPLE]] call AIC_fnc_addCommandMenuAction;
-["GROUP","Pink",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_PINK]] call AIC_fnc_addCommandMenuAction;
-["GROUP","Cyan",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_CYAN]] call AIC_fnc_addCommandMenuAction;
-["GROUP","Black",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_BLACK]] call AIC_fnc_addCommandMenuAction;
-["GROUP","White",["Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_WHITE]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Red",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_RED]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Green",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_GREEN]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Blue",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_BLUE]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Yellow",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_YELLOW]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Purple",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_PURPLE]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Pink",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_PINK]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Cyan",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_CYAN]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Black",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_BLACK]] call AIC_fnc_addCommandMenuAction;
+["GROUP","White",["Group","Color"],AIC_fnc_setGroupColorActionHandler,[AIC_COLOR_WHITE]] call AIC_fnc_addCommandMenuAction;
+
+
+/*
+	Rename Group
+*/
+
+AIC_fnc_renameGroupActionHandler = {
+	params ["_menuParams","_actionParams"];
+	_menuParams params ["_groupControlId"];
+	private ["_group"];
+	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	[_group] spawn AIC_fnc_showRenameGroupDialog;
+};
+["GROUP","Rename Group",["Group"],AIC_fnc_renameGroupActionHandler] call AIC_fnc_addCommandMenuAction;
 
 
 /*
@@ -471,7 +485,7 @@ AIC_fnc_joinGroupActionHandler = {
 		hint ("No Group Selected");
 	};
 };
-["GROUP","Join A Group",["Join / Split Group"],AIC_fnc_joinGroupActionHandler,[]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Join A Group",["Group","Join / Split Group"],AIC_fnc_joinGroupActionHandler,[]] call AIC_fnc_addCommandMenuAction;
 
 AIC_fnc_splitGroupHalfActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -490,7 +504,7 @@ AIC_fnc_splitGroupHalfActionHandler = {
 	} forEach (units _group);
 	hint ("Group Split in Half");
 };
-["GROUP","In Half",["Join / Split Group","Split Group"],AIC_fnc_splitGroupHalfActionHandler,[],{
+["GROUP","In Half",["Group","Join / Split Group","Split Group"],AIC_fnc_splitGroupHalfActionHandler,[],{
 	params ["_groupControlId"];
 	private ["_group"];
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
@@ -524,7 +538,7 @@ AIC_fnc_splitGroupUnitsActionHandler = {
 	hint ("Group Split into Individual Units");
 	
 };
-["GROUP","Into Individual Units",["Join / Split Group","Split Group"],AIC_fnc_splitGroupUnitsActionHandler,[],{
+["GROUP","Into Individual Units",["Group","Join / Split Group","Split Group"],AIC_fnc_splitGroupUnitsActionHandler,[],{
 	params ["_groupControlId"];
 	private ["_group"];
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
@@ -590,7 +604,7 @@ AIC_fnc_assignVehicleActionHandler = {
 	};
 };
 
-["GROUP","Assign Vehicle",[],AIC_fnc_assignVehicleActionHandler,[]] call AIC_fnc_addCommandMenuAction;		
+["GROUP","Assign Vehicle",["Vehicles"],AIC_fnc_assignVehicleActionHandler,[]] call AIC_fnc_addCommandMenuAction;		
 
 AIC_fnc_unassignVehicleActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -604,7 +618,7 @@ AIC_fnc_unassignVehicleActionHandler = {
 	hint ("All vehicles unassigned");
 };
 
-["GROUP","Unassign All Vehicle(s)",[],AIC_fnc_unassignVehicleActionHandler,[],AIC_fnc_hasVehicleAssigned] call AIC_fnc_addCommandMenuAction;
+["GROUP","Unassign All Vehicle(s)",["Vehicles"],AIC_fnc_unassignVehicleActionHandler,[],AIC_fnc_hasVehicleAssigned] call AIC_fnc_addCommandMenuAction;
 
 AIC_fnc_unloadOtherGroupsActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -630,7 +644,7 @@ AIC_fnc_unloadOtherGroupsActionHandler = {
 	hint ((str count _unloadedGroups) + " other group(s) unloaded");
 };
 
-["GROUP","Unload Other Group(s)",[],AIC_fnc_unloadOtherGroupsActionHandler,[],AIC_fnc_hasGroupCargo] call AIC_fnc_addCommandMenuAction;	
+["GROUP","Unload Other Group(s)",["Vehicles"],AIC_fnc_unloadOtherGroupsActionHandler,[],AIC_fnc_hasGroupCargo] call AIC_fnc_addCommandMenuAction;	
 
 
 /*
@@ -689,7 +703,7 @@ AIC_fnc_landNowNearbyActionHandler = {
 	};
 };
 
-["GROUP","Land nearby (search spot within 500m)",["Land now"],AIC_fnc_landNowNearbyActionHandler,[],AIC_fnc_isFlying] call AIC_fnc_addCommandMenuAction;
+["GROUP","Land nearby (search spot within 500m)",["Vehicles","Land now"],AIC_fnc_landNowNearbyActionHandler,[],AIC_fnc_isFlying] call AIC_fnc_addCommandMenuAction;
 
 AIC_fnc_landNowPreciseActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -729,7 +743,7 @@ AIC_fnc_landNowPreciseActionHandler = {
 	};
 };
 
-["GROUP","Land precisely (as close as possible)",["Land now"],AIC_fnc_landNowPreciseActionHandler,[],AIC_fnc_isFlying] call AIC_fnc_addCommandMenuAction;
+["GROUP","Land precisely (as close as possible)",["Vehicles","Land now"],AIC_fnc_landNowPreciseActionHandler,[],AIC_fnc_isFlying] call AIC_fnc_addCommandMenuAction;
 
 
 /*
@@ -769,7 +783,7 @@ AIC_fnc_rappelActionHandler = {
 	};
 };
 
-["GROUP","Rappel Other Group(s)",[],AIC_fnc_rappelActionHandler,[],{
+["GROUP","Rappel Other Group(s)",["Vehicles"],AIC_fnc_rappelActionHandler,[],{
 	params ["_groupControlId"];
 	private ["_group"];
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;

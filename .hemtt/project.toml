@@ -1,6 +1,7 @@
 name = "Advanced AI Command 2"
 prefix = "aicommand2"
 mainprefix = "z"
+out = "hemttout"
 author = "Nimmersatt"
 
 [version]

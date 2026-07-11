@@ -152,6 +152,7 @@ class AICommand
 
 		class showGroupReport {description = ""; recompile = 1};
 		class showGroupWaypointReport {description = ""; recompile = 1};
+		class showRenameGroupDialog {description = ""; recompile = 1};
 	};
 	
 	class CommandControlMapElement

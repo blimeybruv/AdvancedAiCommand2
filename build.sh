@@ -34,5 +34,13 @@ build_mod() {
     "$HEMTT_PATH" "$BUILD_TYPE" # For 'dev', this will create a symbolic link at "<arma3 dir>/z/aicommand2" which allows us to load the mod from this directory.
 }
 
+move_build_results() {
+    rm -rf ./hemttout
+    mkdir ./hemttout
+    cp -R ./.hemttout/* ./hemttout
+    echo "Build results copied to ./hemttout"
+}
+
 download_hemtt
 build_mod
+move_build_results
