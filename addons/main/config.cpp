@@ -18,6 +18,17 @@ class CfgNotifications
 	#include "cfgnotifications.hpp"
 };
 
+class CfgRemoteExec
+{
+	class Functions
+	{
+		mode = 1;
+		jip = 1;
+		class AIC_fnc_applyFlyInHeight { allowedTargets = 1; };
+		class AIC_fnc_getInVehicle { allowedTargets = 1; };
+	};
+};
+
 class CfgVehicles
 {
 	class Logic;

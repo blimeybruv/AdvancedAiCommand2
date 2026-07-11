@@ -268,13 +268,19 @@ if (isServer) then {
 							", _wpIndex];
 							_wpStatement = _wpStatement + _disableWaypointStatement;
 
-							// Stamp the native loiter altitude now so the engine does not override flyInHeightASL on loiter entry
-								if (!isNil "_wpFlyInHeightAsl") then {
-									_wpObject setWaypointLoiterAltitude _wpFlyInHeightAsl;
-									private _flyInHeightStatement = format ["[group this, %1] call AIC_fnc_setWaypointFlyInHeightActionHandlerScript;
-							", _wpFlyInHeightAsl];
-									_wpStatement = _wpStatement + _flyInHeightStatement;
-								};
+						// Apply fly-in height at waypoint arrival
+							if (!isNil "_wpFlyInHeightAsl") then {
+								_wpObject setWaypointLoiterAltitude _wpFlyInHeightAsl;
+								private _flyInHeightStatement = format ["[group this, %1, 'ASL'] call AIC_fnc_setWaypointFlyInHeightActionHandlerScript;
+						", _wpFlyInHeightAsl];
+								_wpStatement = _wpStatement + _flyInHeightStatement;
+							};
+							if (!isNil "_wpFlyInHeight") then {
+								_wpObject setWaypointLoiterAltitude _wpFlyInHeight;
+								private _flyInHeightStatement = format ["[group this, %1, 'AGL'] call AIC_fnc_setWaypointFlyInHeightActionHandlerScript;
+						", _wpFlyInHeight];
+								_wpStatement = _wpStatement + _flyInHeightStatement;
+							};
 							if (!isNil "_wpTimeout") then {
 								_wpObject setWaypointTimeout [_wpTimeout, _wpTimeout, _wpTimeout];
 							};
@@ -324,16 +330,32 @@ if (isServer) then {
 						[_group, _nextActiveWaypoint] call AIC_fnc_setWaypoint;
 					};
 
-					// Store altitude for fallback (always ASL)
+					// Store altitude for fallback (both ASL and AGL)
 											private _wpFlyInHeightAsl = _nextActiveWaypoint select AIC_Waypoint_ArrayIndex_FlyInHeightAsl;
+											private _wpFlyInHeight = _nextActiveWaypoint select AIC_Waypoint_ArrayIndex_FlyInHeight;
 											if (!isNil "_wpFlyInHeightAsl") then {
 												_group setVariable ["AIC_Last_FlyInHeightAsl", _wpFlyInHeightAsl];
+												_group setVariable ["AIC_Last_FlyInHeightMode", "ASL"];
+											};
+											if (!isNil "_wpFlyInHeight") then {
+												_group setVariable ["AIC_Last_FlyInHeight", _wpFlyInHeight];
+												_group setVariable ["AIC_Last_FlyInHeightMode", "AGL"];
 											};
 										} else {
-											// No waypoints: apply last stored ASL altitude if available
-											private _lastFlyInHeightAsl = _group getVariable ["AIC_Last_FlyInHeightAsl", nil];
-											if (!isNil "_lastFlyInHeightAsl") then {
-												[_group, _lastFlyInHeightAsl] call AIC_fnc_setWaypointFlyInHeightActionHandlerScript;
+											// No waypoints: apply last stored altitude if available
+											private _lastFlyInHeightMode = _group getVariable ["AIC_Last_FlyInHeightMode", nil];
+											if (!isNil "_lastFlyInHeightMode") then {
+												if (_lastFlyInHeightMode == "ASL") then {
+													private _lastFlyInHeightAsl = _group getVariable ["AIC_Last_FlyInHeightAsl", nil];
+													if (!isNil "_lastFlyInHeightAsl") then {
+														[_group, _lastFlyInHeightAsl, "ASL"] call AIC_fnc_setWaypointFlyInHeightActionHandlerScript;
+													};
+												} else {
+													private _lastFlyInHeight = _group getVariable ["AIC_Last_FlyInHeight", nil];
+													if (!isNil "_lastFlyInHeight") then {
+														[_group, _lastFlyInHeight, "AGL"] call AIC_fnc_setWaypointFlyInHeightActionHandlerScript;
+													};
+												};
 											};
 				};
 			} forEach allGroups;

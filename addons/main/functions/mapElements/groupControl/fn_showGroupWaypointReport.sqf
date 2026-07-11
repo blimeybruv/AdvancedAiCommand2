@@ -21,7 +21,11 @@ if(_wpDuration > 0) then {
 };
 
 if(!isNil "_wpFlyInHeightAsl") then {
-	_wpInfo = _wpInfo + format [_textSmall,"Height (meters ASL)", _wpFlyInHeightAsl,_sizeSmall];
+	_wpInfo = _wpInfo + format [_textSmall,"Height (m ASL)", _wpFlyInHeightAsl,_sizeSmall];
+};
+
+if(!isNil "_wpFlyInHeight") then {
+	_wpInfo = _wpInfo + format [_textSmall,"Height (m AGL)", _wpFlyInHeight,_sizeSmall];
 };
 
 _text = parseText (

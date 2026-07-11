@@ -50,13 +50,14 @@ AIC_fnc_addWaypointInitNilWaypointParams = {
 	private _wpDurationDefaultVal = 0;
 	[_waypointParams, AIC_Waypoint_ArrayIndex_Duration, _wpDurationDefaultVal] call AIC_fnc_initArrayItem;
 
-	// Default ASL altitude for new waypoints (500m). Without this, index 13 is nil
-	// and the sync loop's `select 13` triggers a zero-divisor in the compiled
-	// bytecode (HEMTT sqfc) when the waypoint array is shorter than 14 elements.
-	// A 500m default is safe for typical Arma terrain and matches the recommended
-	// minimum operational altitude.
-	private _wpFlyInHeightAslDefaultVal = 500;
+	// No default fly-in height — new waypoints should not enforce any altitude
+	// unless the player explicitly set one (group-level or waypoint-level).
+	// Enforce that the waypoint array has the required indices to prevent
+	// zero-divisor errors in HEMTT sqfc compiled bytecode.
+	private _wpFlyInHeightAslDefaultVal = nil;
 	[_waypointParams, AIC_Waypoint_ArrayIndex_FlyInHeightAsl, _wpFlyInHeightAslDefaultVal] call AIC_fnc_initArrayItem;
+	private _wpFlyInHeightDefaultVal = nil;
+	[_waypointParams, AIC_Waypoint_ArrayIndex_FlyInHeight, _wpFlyInHeightDefaultVal] call AIC_fnc_initArrayItem;
 };
 
 
@@ -79,6 +80,32 @@ if (isNil "_wpPosition") exitWith {
 
 // Init waypoint params
 [_waypointParams] call AIC_fnc_addWaypointInitNilWaypointParams;
+
+// Inherit group-level fly-in height if set and this waypoint has no explicit height
+private _groupFlyInHeightMode = _group getVariable ["AIC_Last_FlyInHeightMode", nil];
+if (!isNil "_groupFlyInHeightMode") then {
+	if (_groupFlyInHeightMode == "ASL") then {
+		private _wpFlyInHeightAslValue = _waypointParams select AIC_Waypoint_ArrayIndex_FlyInHeightAsl;
+		// Only override if the waypoint doesn't already have an explicit ASL height
+		if (isNil "_wpFlyInHeightAslValue") then {
+			private _groupFlyInHeightAsl = _group getVariable ["AIC_Last_FlyInHeightAsl", nil];
+			if (!isNil "_groupFlyInHeightAsl") then {
+				_waypointParams set [AIC_Waypoint_ArrayIndex_FlyInHeightAsl, _groupFlyInHeightAsl];
+				_waypointParams set [AIC_Waypoint_ArrayIndex_FlyInHeight, nil];
+			};
+		};
+	} else {
+		// AGL mode
+		private _wpFlyInHeightValue = _waypointParams select AIC_Waypoint_ArrayIndex_FlyInHeight;
+		if (isNil "_wpFlyInHeightValue") then {
+			private _groupFlyInHeight = _group getVariable ["AIC_Last_FlyInHeight", nil];
+			if (!isNil "_groupFlyInHeight") then {
+				_waypointParams set [AIC_Waypoint_ArrayIndex_FlyInHeight, _groupFlyInHeight];
+				_waypointParams set [AIC_Waypoint_ArrayIndex_FlyInHeightAsl, nil];
+			};
+		};
+	};
+};
 
 // Get all currently known waypoints
 private _allWaypointsContainer = _group getVariable ["AIC_Waypoints", [0, []]];

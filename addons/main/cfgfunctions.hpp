@@ -171,6 +171,7 @@ class AICommand
 	{
 		file = "\z\aicommand2\addons\main\functions\util";
 		class getInVehicle {description = ""; recompile = 1};
+		class showHeightInputDialog {description = ""; recompile = 1};
 	};
 	
 };

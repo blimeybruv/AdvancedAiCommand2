@@ -255,32 +255,30 @@ AIC_fnc_commandMenuIsAir = {
 	_hasAir;
 };
 
-AIC_fnc_setFlyInHeightAslActionHandler = {
+AIC_fnc_setFlyInHeightGroupActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
-	private ["_group"];
-	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
-	_actionParams params ["_height"];
+	_actionParams params ["_mode"];
+	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	private _title = ["Fly above ground (AGL)","Fly above sea (ASL)"] select (_mode == "ASL");
+
+	// Show input dialog
+	private _result = [_title] call AIC_fnc_showHeightInputDialog;
+	if (_result < 0) exitWith {}; // cancelled
+
 	{
 		if(_x isKindOf "Air") then {
-			// Use the cfgfunction — runs on the vehicle's owning machine.
-			// Previous code-block remoteExec was mis-parsed (3-arg form to a 2-arg command).
-			[_x, _height] remoteExec ["AIC_fnc_applyFlyInHeight", _x];
+			[_x, _result, _mode] call AIC_fnc_applyFlyInHeight;
 		};
 	} forEach ([_group] call AIC_fnc_getGroupAssignedVehicles);
-	hint ("Fly in height set to " + (str _height) + " meters above sea level");
+
+	private _unit = ["m AGL", "m ASL"] select (_mode == "ASL");
+	hint ("Fly in height set to " + (str _result) + " " + _unit);
 };
 
 
-// Fly above sea level
-["GROUP","500m ASL",["Fly in Height (above sea)"],AIC_fnc_setFlyInHeightAslActionHandler,[500],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
-["GROUP","1000m ASL",["Fly in Height (above sea)"],AIC_fnc_setFlyInHeightAslActionHandler,[1000],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
-["GROUP","1500m ASL",["Fly in Height (above sea)"],AIC_fnc_setFlyInHeightAslActionHandler,[1500],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
-["GROUP","2000m ASL",["Fly in Height (above sea)"],AIC_fnc_setFlyInHeightAslActionHandler,[2000],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
-["GROUP","2500m ASL",["Fly in Height (above sea)"],AIC_fnc_setFlyInHeightAslActionHandler,[2500],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
-["GROUP","3000m ASL",["Fly in Height (above sea)"],AIC_fnc_setFlyInHeightAslActionHandler,[3000],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
-["GROUP","3500m ASL",["Fly in Height (above sea)"],AIC_fnc_setFlyInHeightAslActionHandler,[3500],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
-["GROUP","4000m ASL",["Fly in Height (above sea)"],AIC_fnc_setFlyInHeightAslActionHandler,[4000],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
+["GROUP","Fly above ground (AGL)...",["Set Fly in Height"],AIC_fnc_setFlyInHeightGroupActionHandler,["AGL"],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
+["GROUP","Fly above sea (ASL)...",["Set Fly in Height"],AIC_fnc_setFlyInHeightGroupActionHandler,["ASL"],AIC_fnc_commandMenuIsAir] call AIC_fnc_addCommandMenuAction;
 
 
 /*
@@ -1020,53 +1018,51 @@ private _labelLandPrecise = "Land precisely (as close as possible)";
 ["WAYPOINT","4000M Radius",["Set Waypoint Type","Loiter (C-Clockwise)"],AIC_fnc_setLoiterTypeActionHandler,[4000,false]] call AIC_fnc_addCommandMenuAction;
 
 
-// Only ASL — flyInHeight=100 (subordinate floor), flyInHeightASL=[_height,_height,_height] (dominant).
-// Arma uses max(flyInHeight, flyInHeightASL) so ASL wins at any height > 100.
-// Wrapper kept for back-compat with the completion-statement format string in
-// fn_commandControlManager.sqf (which embeds this function name as a string).
-// Internally just calls the cfgfunction, which runs on the vehicle's owning
-// machine and is the only place flyInHeightASL actually has effect.
+// Wrapper for both AGL and ASL fly-in height — used as completion-statement snippet
+// in fn_commandControlManager.sqf (which embeds this function name as a string).
+// Internally calls AIC_fnc_applyFlyInHeight, which runs on the vehicle's owning machine.
 AIC_fnc_setWaypointFlyInHeightActionHandlerScript = {
-	params ["_group","_height"];
+	params ["_group","_height",["_mode","ASL"]];
 	{
 		if(_x isKindOf "Air") then {
-			[_x, _height] remoteExec ["AIC_fnc_applyFlyInHeight", _x];
+			[_x, _height, _mode] call AIC_fnc_applyFlyInHeight;
 		};
 	} forEach ([_group] call AIC_fnc_getGroupAssignedVehicles);
 };
 
 AIC_fnc_setWaypointFlyInHeightActionHandler = {
-	private ["_script"];
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId","_waypointId"];
-	_actionParams params ["_height"];
-	private ["_group","_waypoint"];
-	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
-	_waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
-	// Store altitude as ASL (index 13), clear AGL (index 12)
-	_waypoint set [AIC_Waypoint_ArrayIndex_FlyInHeight, nil];
-	_waypoint set [AIC_Waypoint_ArrayIndex_FlyInHeightAsl, _height];
+	_actionParams params ["_mode"];
+	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
+	private _title = ["Fly above ground (AGL)","Fly above sea (ASL)"] select (_mode == "ASL");
+
+	// Show input dialog
+	private _result = [_title] call AIC_fnc_showHeightInputDialog;
+	if (_result < 0) exitWith {}; // cancelled
+
+	if (_mode == "AGL") then {
+		_waypoint set [AIC_Waypoint_ArrayIndex_FlyInHeightAsl, nil];
+		_waypoint set [AIC_Waypoint_ArrayIndex_FlyInHeight, _result];
+	} else {
+		_waypoint set [AIC_Waypoint_ArrayIndex_FlyInHeight, nil];
+		_waypoint set [AIC_Waypoint_ArrayIndex_FlyInHeightAsl, _result];
+	};
 	[_group, _waypoint] call AIC_fnc_setWaypoint;
-	// Loiter-altitude stamp removed from this menu handler — HEMTT 1.19.1's SQF parser
-	// rejects setWaypointLoiterAltitude in this code block. The sync loop in
-	// fn_commandControlManager.sqf stamps the loiter altitude on the next 2-second
-	// tick when it rebuilds the waypoint, so the loiter-altitude behaviour is
-	// preserved, just with a 2-second delay.
+	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
+
 	// Apply altitude to aircraft immediately
-	[_group, _height] call AIC_fnc_setWaypointFlyInHeightActionHandlerScript;
-	hint ("Waypoint fly in height set to " + (str _height) + "m ASL");
+	[_group, _result, _mode] call AIC_fnc_setWaypointFlyInHeightActionHandlerScript;
+
+	private _unit = ["m AGL", "m ASL"] select (_mode == "ASL");
+	hint ("Waypoint fly in height set to " + (str _result) + " " + _unit);
 };
 
 
-// Waypoint fly in height (ASL)
-["WAYPOINT","500m ASL",["Set Fly in Height (ASL)"],AIC_fnc_setWaypointFlyInHeightActionHandler,[500],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","1000m ASL",["Set Fly in Height (ASL)"],AIC_fnc_setWaypointFlyInHeightActionHandler,[1000],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","1500m ASL",["Set Fly in Height (ASL)"],AIC_fnc_setWaypointFlyInHeightActionHandler,[1500],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","2000m ASL",["Set Fly in Height (ASL)"],AIC_fnc_setWaypointFlyInHeightActionHandler,[2000],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","2500m ASL",["Set Fly in Height (ASL)"],AIC_fnc_setWaypointFlyInHeightActionHandler,[2500],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","3000m ASL",["Set Fly in Height (ASL)"],AIC_fnc_setWaypointFlyInHeightActionHandler,[3000],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","3500m ASL",["Set Fly in Height (ASL)"],AIC_fnc_setWaypointFlyInHeightActionHandler,[3500],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","4000m ASL",["Set Fly in Height (ASL)"],AIC_fnc_setWaypointFlyInHeightActionHandler,[4000],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
+// Waypoint fly in height
+["WAYPOINT","Fly above ground (AGL)...",["Set Fly in Height"],AIC_fnc_setWaypointFlyInHeightActionHandler,["AGL"],AIC_fnc_hasAircraftAssigned] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Fly above sea (ASL)...",["Set Fly in Height"],AIC_fnc_setWaypointFlyInHeightActionHandler,["ASL"],{params ["_groupControlId","_waypointId"]; (_groupControlId != "") && {!isNil{_waypointId}} && {([_groupControlId call AIC_fnc_getGroupControlGroup,_waypointId] call AIC_fnc_getWaypoint) param [3,""] != "LOITER"} && {[([_groupControlId] call AIC_fnc_getGroupControlGroup)] call AIC_fnc_getGroupAssignedVehicles findIf {_x isKindOf "Air"} >= 0}}] call AIC_fnc_addCommandMenuAction;
 
 AIC_fnc_setWaypointDurationActionHandler = {
 	params ["_menuParams","_actionParams"];
