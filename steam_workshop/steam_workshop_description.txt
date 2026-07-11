@@ -1,0 +1,161 @@
+[h1]Advanced AI Command 2[/h1]
+
+[b]Take full command of the battlefield from your map.[/b] Click on squad icons, place waypoints, assign vehicles, orchestrate helicopter insertions — all with a few clicks. Zero setup required: just enable the mod and command every AI squad in any mission.
+
+[hr]
+
+[h1]🔥 Features[/h1]
+
+[h2]Map-Based Commanding[/h2]
+[list]
+[*]Every friendly squad appears as an interactive icon on the map. Click to select and open the full command menu.
+[*]Waypoints are drawn on the map connected by lines — always see exactly where each squad is heading.
+[*]Icon colors are fully customizable per squad.
+[/list]
+
+[h2]⚙️ 15+ Waypoint Types with Full Customization[/h2]
+[list]
+[*][b]Move, Hold, Attack, Seek & Destroy, Defend / Garrison (CBA), Loiter, Land, Unload[/b] — and more.
+[*]Each waypoint can be individually configured: formation, behaviour, combat mode, speed, completion radius, timeout, fly-in height, loiter radius and direction.
+[*]Click any existing waypoint on the map to change its settings on the fly.
+[/list]
+
+[h2]🚁 Automated Helicopter Operations[/h2]
+[list]
+[*]Set up fully automated air assault chains: [b]Load troops → Unload waypoint at LZ → Land waypoint back at base[/b]. The helicopter handles everything.
+[*][b]"Land now"[/b] command: pick a spot on the map and land immediately — either nearby (auto-finds a clearing within 500m) or precisely on the clicked position.
+[*]Set custom fly-in heights (AGL or ASL) for your aircraft.
+[*]Rappelling support for helicopters (requires Advanced Rappelling mod).
+[/list]
+
+[h2]🚗 Vehicle Management[/h2]
+[list]
+[*]Assign any vehicle on the map to a squad. Crew automatically mounts up and takes their assigned seats.
+[*]Unassign vehicles, unload passengers, or unload other groups riding as cargo.
+[/list]
+
+[h2]👁️ Remote View & Control[/h2]
+[list]
+[*][b]Remote View:[/b] attach a 3rd person camera to any squad leader to observe the battlefield from their position.
+[*][b]Remote Control:[/b] take full direct control of any AI squad leader — move, shoot, and fight as them. Press DELETE to return.
+[/list]
+
+[h2]Combat & Behaviour Control[/h2]
+[list]
+[*]5 combat modes: Never Fire → Fire At Will, Engage At Will
+[*]5 behaviour modes: Careless, Safe, Aware, Combat, Stealth
+[*][b]Autonomous Attacking toggle[/b] (enableAttack) — prevents squads from recklessly pushing into enemy positions. Perfect for holding defensive lines.
+[*][b]Auto Combat Mode toggle[/b] — prevent AI from auto-switching combat modes on contact.
+[*][b]"Forget all targets"[/b] — instantly breaks squads out of chase loops or frozen-in-place bugs (Lambs_Danger compatibility fix).
+[/list]
+
+[h2]Squad Customization[/h2]
+[list]
+[*]9 color options for squad map icons (Red, Green, Blue, Yellow, Purple, Pink, Cyan, Black, White).
+[*]Rename any squad with a custom name.
+[*]Join squads together or split them — in half, or into individual units.
+[*]Group report popup: see a summary of unit types in large squads (e.g. "5× marksman, 3× autorifleman").
+[/list]
+
+[h2]Zero Configuration[/h2]
+[list]
+[*]Works automatically in [b]any mission[/b] — singleplayer or multiplayer. Just install and play.
+[*]For advanced setups, place editor modules ([i]AdvancedAICommand_Commanders[/i] and [i]AdvancedAICommand_Groups[/i]) to restrict which players command which squads.
+[*]Mod is fully signed for multiplayer.
+[/list]
+
+[h2]Broad Compatibility[/h2]
+[list]
+[*]Compatible with [b]Antistasi[/b] (Community, Plus, Ultimate) — civilian groups auto-hide while undercover.
+[*]Compatible with AI mods: [b]Lambs_Danger[/b], [b]DCO Soldier FSM[/b].
+[*]No AI behaviour modifications — the mod only issues waypoints and orders, leaving your AI mods in full control.
+[*][b]Incompatible with Drongos Air Operations[/b] (it deletes move waypoints immediately).
+[*]Partially compatible with [b]Drongos Command Enhancement[/b] — see details below.
+[/list]
+
+[hr]
+
+[h1]How to Use[/h1]
+
+[b]Adding waypoints:[/b]
+[olist]
+[*]Open the map.
+[*]Click on the squad icon you want to command.
+[*]Click on the map to place a "move" waypoint. Click again for additional waypoints.
+[*]Right-click to finish placing waypoints.
+[/olist]
+
+[b]Changing waypoint options:[/b]
+[olist]
+[*]Click on an existing waypoint to open its options menu.
+[*]Select an option using the mouse wheel.
+[*]Confirm with the "Common - Use Selected Action" keybind (default: Enter or Space).
+[*]Right-click to exit the menu.
+[/olist]
+
+[hr]
+
+[h1]Installation[/h1]
+
+[b]Singleplayer:[/b] Install and enable the mod. No further setup required.
+
+[b]Multiplayer:[/b] The mod must be installed on the server and on all clients. By default, anyone can control all squads. This can be restricted by placing the editor modules — see the original mod's documentation for details.
+
+[hr]
+
+[h1]Changes from the Original Mod[/h1]
+
+Full release notes: [url=https://github.com/SteamNimmersatt/AdvancedAiCommand2/releases]GitHub Releases[/url]
+
+[olist]
+[*][b]New waypoint types[/b] — Hold, Unload, Land, Attack, Seek & Destroy, Defend / Garrison (CBA). Enables automated helicopter insertions: load troops → unload at LZ → land back at base.
+[*][b]Improved "Land now"[/b] — lands helicopters as close as possible to the clicked position (precise mode creates an invisible helipad at the exact spot).
+[*][b]Reorganized command menu[/b] — faster access to common actions with logical sub-menus.
+[*][b]Autonomous Attacking toggle[/b] — prevent squads from pushing toward enemy positions. Combined with hold waypoints, stops squads from advancing into towns or fortifications.
+[*][b]"Forget all targets"[/b] — fixes groups that get stuck chasing enemies instead of following waypoints. Also resolves Lambs_Danger vehicle freeze issues.
+[*][b]More color options[/b] — 9 colors for squad icons (up from the original).
+[*][b]More fly-in height presets[/b] (e.g. 750 m) plus custom height input.
+[*][b]Improved combat mode descriptions[/b] with clearer labels.
+[*][b]Group report popup[/b] — unit type breakdown for squads larger than 5 members.
+[*][b]Antistasi awareness[/b] — civilian groups are never shown on the map while undercover.
+[/olist]
+
+[hr]
+
+[h1]Mod Compatibility — Details[/h1]
+
+[b]Drongos Air Operations:[/b] Incompatible. Pilots ignore move waypoints (Drongos deletes them immediately). Use one or the other.
+
+[b]Drongos Command Enhancement:[/b] Partially compatible.
+[list]
+[*]AAC2 only tracks waypoints added through its own group icons. Waypoints from Drongos won't be visible or editable in AAC2.
+[*]Disable Drongos' map icon drawing (it's off by default). Drongos is still useful for contact and casualty reports in chat.
+[*]Use only one mod — AAC2 or Drongos — to assign and unassign vehicles. Mixing will cause internal assignment records to go out of sync.
+[/list]
+
+[b]Antistasi (official and Ultimate):[/b] Compatible. Known visual glitch: when clicking a group on the map, the group info panel on the right side of the screen disappears immediately. This is caused by Antistasi hiding all hints every few frames via [i]A3A_fnc_customHintRender[/i].
+
+[hr]
+
+[h1]Development[/h1]
+
+Source code and issue tracker: [url=https://github.com/SteamNimmersatt/AdvancedAiCommand2]GitHub Repository[/url]
+
+[list]
+[*]Report bugs and feature requests on GitHub.
+[*]Contributions to development are welcome.
+[/list]
+
+[hr]
+
+[h1]📜 Changelog[/h1]
+
+[url=https://steamcommunity.com/sharedfiles/filedetails/changelog/3250858334]Steam Workshop Changelog[/url]
+
+[hr]
+
+[h1]Credits[/h1]
+
+[b]Original Author:[/b] [url=https://steamcommunity.com/id/saduda][SA] Duda[/url]
+[b]Original Mod:[/b] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=685037021]Advanced AI Command[/url]
+[b]Current Maintainer:[/b] Nimmersatt
