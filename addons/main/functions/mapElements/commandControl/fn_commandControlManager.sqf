@@ -253,6 +253,19 @@ if (isServer) then {
 							private _wpExactPlacement = -1;
 							private _wpObject = _group addWaypoint [_wpPosition, _wpExactPlacement];
 
+							// DEFEND type: replace with MOVE waypoint + CBA_fnc_taskDefend as completion statement
+							// Must be handled BEFORE setWaypointType since "DEFEND" is not a valid Arma enum value
+							private _wpDefendStatement = "";
+							if (_wpType == "DEFEND") then {
+								_wpType = "MOVE";
+								private _defendRadius = 50;
+								if (!isNil "_wpCompletionRadius") then {
+									_defendRadius = _wpCompletionRadius;
+								};
+								_wpDefendStatement = format ["[group this, group this, %1] call CBA_fnc_taskDefend;", _defendRadius];
+								[AIC_LOGLEVEL_DEBUG, format["Setting up defend/garrison waypoint with CBA_fnc_taskDefend. _defendRadius=%1.", _defendRadius]] call AIC_fnc_log;
+							};
+
 							// Set waypoint type
 							_wpObject setWaypointType _wpType;
 
@@ -291,7 +304,7 @@ if (isServer) then {
 								_wpObject setWaypointCompletionRadius _wpCompletionRadius;
 							};
 
-							if (_wpType == "LOITER") then {
+						if (_wpType == "LOITER") then {
 								[AIC_LOGLEVEL_DEBUG, format["Setting up loiter waypoint. _wpLoiterRadius=%1, _wpLoiterDirection=%2.", _wpLoiterRadius, _wpLoiterDirection]] call AIC_fnc_log;
 								if (!isNil "_wpLoiterRadius") then {
 									_wpObject setWaypointLoiterRadius _wpLoiterRadius;
@@ -299,6 +312,11 @@ if (isServer) then {
 								if (!isNil "_wpLoiterDirection") then {
 									_wpObject setWaypointLoiterType _wpLoiterDirection;
 								};
+							};
+
+							// Prepend the defend statement (runs before the disable and original statement)
+							if (_wpDefendStatement != "") then {
+								_wpStatement = _wpDefendStatement + _wpStatement;
 							};
 
 							// Wp statement - do this at the end to ensure the statement includes everything.

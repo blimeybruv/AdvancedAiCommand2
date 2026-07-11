@@ -4,7 +4,7 @@ class CfgPatches
 	{
 		units[] = {"AdvancedAICommand_Commanders","AdvancedAICommand_Groups"};
 		requiredVersion = 1.0;
-		requiredAddons[] = {"A3_Modules_F"};
+		requiredAddons[] = {"A3_Modules_F","cba_main"};
 	};
 };
 

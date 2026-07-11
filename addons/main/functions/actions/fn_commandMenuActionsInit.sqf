@@ -947,6 +947,7 @@ AIC_fnc_setLoiterTypeActionHandler = {
 ["WAYPOINT","Move (default)",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["MOVE","'Move'"]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Hold",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["HOLD","'Hold'"]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Seek & Destroy",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["SAD","'Seek & Destroy'"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Defend / Garrison",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["DEFEND","'Defend / Garrison'"]] call AIC_fnc_addCommandMenuAction;
 
 /*
 	WP Type "Unload"
