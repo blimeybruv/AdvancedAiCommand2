@@ -262,7 +262,7 @@ if (isServer) then {
 								if (!isNil "_wpCompletionRadius") then {
 									_defendRadius = _wpCompletionRadius;
 								};
-								_wpDefendStatement = format ["[group this, group this, %1] call CBA_fnc_taskDefend;", _defendRadius];
+								_wpDefendStatement = format ["[group this, group this, %1] call CBA_fnc_taskDefend; [group this, 'Garrisoning at waypoint.'] call AIC_fnc_msgSideChat;", _defendRadius];
 								[AIC_LOGLEVEL_DEBUG, format["Setting up defend/garrison waypoint with CBA_fnc_taskDefend. _defendRadius=%1.", _defendRadius]] call AIC_fnc_log;
 							};
 
@@ -275,7 +275,7 @@ if (isServer) then {
 								if (!isNil "_wpCompletionRadius") then {
 									_attackRadius = _wpCompletionRadius;
 								};
-								_wpAttackStatement = format ["[group this, group this, %1] call CBA_fnc_taskAttack;", _attackRadius];
+								_wpAttackStatement = format ["[group this, group this, %1] call CBA_fnc_taskAttack; [group this, 'Attacking at waypoint.'] call AIC_fnc_msgSideChat;", _attackRadius];
 								[AIC_LOGLEVEL_DEBUG, format["Setting up attack waypoint with CBA_fnc_taskAttack. _attackRadius=%1.", _attackRadius]] call AIC_fnc_log;
 							};
 
