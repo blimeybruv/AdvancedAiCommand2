@@ -4,9 +4,9 @@
 
 [hr]
 
-[h1]🔥 Features[/h1]
+[h1]Features[/h1]
 
-[h2]Map-Based Commanding[/h2]
+[h2]🖈 Map-Based Commanding[/h2]
 [list]
 [*]Every friendly squad appears as an interactive icon on the map. Click to select and open the full command menu.
 [*]Waypoints are drawn on the map connected by lines — always see exactly where each squad is heading.
@@ -40,9 +40,9 @@
 [*][b]Remote Control:[/b] take full direct control of any AI squad leader — move, shoot, and fight as them. Press DELETE to return.
 [/list]
 
-[h2]Combat & Behaviour Control[/h2]
+[h2]🔥 Combat & Behaviour Control[/h2]
 [list]
-[*]5 combat modes: Never Fire → Fire At Will, Engage At Will
+[*]5 combat modes: Never Fire, Fire At Will, Engage At Will ...
 [*]5 behaviour modes: Careless, Safe, Aware, Combat, Stealth
 [*][b]Autonomous Attacking toggle[/b] (enableAttack) — prevents squads from recklessly pushing into enemy positions. Perfect for holding defensive lines.
 [*][b]Auto Combat Mode toggle[/b] — prevent AI from auto-switching combat modes on contact.
