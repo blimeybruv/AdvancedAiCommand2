@@ -1,6 +1,3 @@
-
-
-
 /*
 	Gets and sets group control wp interactive icons
 	Data type: ARRAY - [
@@ -64,4 +61,5 @@
 */
 #define AIC_fnc_getGroupControlActionsRevision(_controlId) missionNamespace getVariable [format ["AIC_Group_Control_%1_Actions_Revision",(_controlId)],0]
 #define AIC_fnc_setGroupControlActionsRevision(_controlId,_actionRevision) missionNamespace setVariable [format ["AIC_Group_Control_%1_Actions_Revision",(_controlId)],_actionRevision]
+
 

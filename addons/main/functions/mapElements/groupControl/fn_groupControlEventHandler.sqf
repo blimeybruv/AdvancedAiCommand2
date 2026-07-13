@@ -75,14 +75,28 @@ if(isNil "_groupControlId") then {
 	if(_event == "RIGHT_MOUSE_BUTTON_CLICK_MAP" ) then {
 		if(AIC_fnc_getGroupControlAddingWaypoints(_groupControlId)) then {
 			AIC_fnc_setGroupControlAddingWaypoints(_groupControlId,false);
+			missionNamespace setVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], -1];
 		};
 	};
 
 	if(_event == "LEFT_MOUSE_BUTTON_DOWN_MAP" ) then {
 		if(AIC_fnc_getGroupControlAddingWaypoints(_groupControlId)) then {
+			// Check if this is the first waypoint in this session (for one-time chat message)
+			private _oldPendingWp = missionNamespace getVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], -1];
+			// Clear previous pending config before adding a new waypoint
+			missionNamespace setVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], -1];
 			private _waypointParams = [nil, (AIC_fnc_getMouseMapPosition()), false, "MOVE"];
-			[_group, _waypointParams] call AIC_fnc_addWaypoint;
+			private _addedWaypoint = [_group, _waypointParams] call AIC_fnc_addWaypoint;
 			[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
+			// Track the last placed waypoint as pending configuration and open its menu
+			private _lastWpId = _addedWaypoint select AIC_Waypoint_ArrayIndex_Index;
+			missionNamespace setVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], _lastWpId];
+			if(_oldPendingWp == -1) then {
+				systemChat "AAC2: Waypoint added. Use the menu to configure it. Left-click to add another. Right-click to finish.";
+			};
+			// Close any open command menu first, then re-open with new wp data (prevents toggle-off behavior)
+			showCommandingMenu "";
+			[_groupControlId,_lastWpId] call AIC_fnc_showGroupWpCommandMenu;
 		};
 	};
 
