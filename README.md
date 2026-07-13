@@ -10,17 +10,25 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3250858334
 * Download [hemtt]([https://www.google.com](https://github.com/BrettMayson/HEMTT/releases)) and place it in the root directory of the git repository.
 * Subscribe to the development mods listed in file "hemtt/launch.toml", section "workshop".
 
+
 ## Building the mod
 * Run "hemtt dev" (Windows: "hemtt.exe dev") to create a dev build.
 * Run "hemtt release" to create a signed release build.
 * See the [full hemtt documentation](https://hemtt.dev/) for more information.
 
 
-## Editing code while Arma3 is running
+## Hot Reload - Editing code while Arma3 is running - Method 1
 * Run the game via "hemtt launch" (Windows: "hemtt.exe launch")
-  * This will create a symbolic link in the Arma3 game directory to the source code of the git repository.
+  * This will create a symbolic link in the Arma3 game directory to hemtt dev build.
   * It will build the mod and run the game as defined in "hemtt/launch.toml".
-* After a code change you need to restart the mission to see the change.
+* After a code change you need to restart the mission to apply the change.
+  * You need to restart the game if you've added any files. You will also need to restart in some other special cases like new addon settings.
+
+## Hot Reload - Editing code while Arma3 is running - Method 2
+* Build the mod (either via "build.sh" or "hemtt dev"). This will create a development build in the project directory "hemttout/dev" (build.sh) or ".hemttout/dev" ("hemtt dev" cmd).
+* Open Arma3 launcher, select "Mods", click on "Local mod", browse to the just reated development build of the mod (directory "hemttout/dev" or ".hemttout/dev").
+* Enable "File Patching" in the Parameters of the Arma3 Launcher. This will allow you to rebuild and reload the mod while Arma3 is running. 
+* After a code change you need to restart the mission to apply the change.
   * You need to restart the game if you've added any files. You will also need to restart in some other special cases like new addon settings.
 
 ---
