@@ -92,7 +92,7 @@ if(isNil "_groupControlId") then {
 			private _lastWpId = _addedWaypoint select AIC_Waypoint_ArrayIndex_Index;
 			missionNamespace setVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], _lastWpId];
 			if(_oldPendingWp == -1) then {
-				systemChat "AAC2: Waypoint added. Use the menu to configure it. Left-click to add another. Right-click to finish.";
+				systemChat "[AAC2] - Waypoint added. Use the menu to configure it. Left-click to add another. Right-click to finish.";
 			};
 			// Close any open command menu first, then re-open with new wp data (prevents toggle-off behavior)
 			showCommandingMenu "";
