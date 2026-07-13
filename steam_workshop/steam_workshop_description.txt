@@ -20,6 +20,23 @@
 [*]Click any existing waypoint on the map to change its settings on the fly.
 [/list]
 
+[h2]⚙️ Squad Customization[/h2]
+[list]
+[*]9 color options for squad map icons (Red, Green, Blue, Yellow, Purple, Pink, Cyan, Black, White).
+[*]Rename any squad with a custom name.
+[*]Join squads together or split them — in half, or into individual units.
+[*]Group report popup: see a summary of unit types in large squads (e.g. "5× marksman, 3× autorifleman").
+[/list]
+
+[h2]🔥 Combat & Behaviour Control[/h2]
+[list]
+[*][b]"Forget all targets"[/b] — instantly breaks squads out of chase loops or frozen-in-place bugs (Lambs_Danger compatibility fix).
+[*]5 combat modes: Never Fire, Fire At Will, Engage At Will ...
+[*]5 behaviour modes: Careless, Safe, Aware, Combat, Stealth
+[*][b]Autonomous Attacking toggle[/b] (enableAttack) — prevents squads from recklessly pushing into enemy positions. Perfect for holding defensive lines.
+[*][b]Auto Combat Mode toggle[/b] — prevent AI from auto-switching combat modes on contact.
+[/list]
+
 [h2]🚁 Automated Helicopter Operations[/h2]
 [list]
 [*]Set up fully automated air assault chains: [b]Load troops → Unload waypoint at LZ → Land waypoint back at base[/b]. The helicopter handles everything.
@@ -40,22 +57,6 @@
 [*][b]Remote Control:[/b] take full direct control of any AI squad leader — move, shoot, and fight as them. Press DELETE to return.
 [/list]
 
-[h2]🔥 Combat & Behaviour Control[/h2]
-[list]
-[*]5 combat modes: Never Fire, Fire At Will, Engage At Will ...
-[*]5 behaviour modes: Careless, Safe, Aware, Combat, Stealth
-[*][b]Autonomous Attacking toggle[/b] (enableAttack) — prevents squads from recklessly pushing into enemy positions. Perfect for holding defensive lines.
-[*][b]Auto Combat Mode toggle[/b] — prevent AI from auto-switching combat modes on contact.
-[*][b]"Forget all targets"[/b] — instantly breaks squads out of chase loops or frozen-in-place bugs (Lambs_Danger compatibility fix).
-[/list]
-
-[h2]Squad Customization[/h2]
-[list]
-[*]9 color options for squad map icons (Red, Green, Blue, Yellow, Purple, Pink, Cyan, Black, White).
-[*]Rename any squad with a custom name.
-[*]Join squads together or split them — in half, or into individual units.
-[*]Group report popup: see a summary of unit types in large squads (e.g. "5× marksman, 3× autorifleman").
-[/list]
 
 [h2]Zero Configuration[/h2]
 [list]
@@ -81,6 +82,7 @@
 [olist]
 [*]Open the map.
 [*]Click on the squad icon you want to command.
+[*]In the now open menu confirm the "Add Waypoints" action (default keybind: Enter or Space).
 [*]Click on the map to place a "move" waypoint. Click again for additional waypoints.
 [*]Right-click to finish placing waypoints.
 [/olist]
@@ -89,7 +91,7 @@
 [olist]
 [*]Click on an existing waypoint to open its options menu.
 [*]Select an option using the mouse wheel.
-[*]Confirm with the "Common - Use Selected Action" keybind (default: Enter or Space).
+[*]Confirm with the "Common - Use Selected Action" keybind (default keybind: Enter or Space).
 [*]Right-click to exit the menu.
 [/olist]
 
@@ -105,7 +107,7 @@
 
 [h1]Changes from the Original Mod[/h1]
 
-Full release notes: [url=https://github.com/SteamNimmersatt/AdvancedAiCommand2/releases]GitHub Releases[/url]
+Highlight of some of the changes:
 
 [olist]
 [*][b]New waypoint types[/b] — Hold, Unload, Land, Attack, Seek & Destroy, Defend / Garrison (CBA). Enables automated helicopter insertions: load troops → unload at LZ → land back at base.
@@ -139,7 +141,7 @@ Full release notes: [url=https://github.com/SteamNimmersatt/AdvancedAiCommand2/r
 
 [h1]Development[/h1]
 
-Source code and issue tracker: [url=https://github.com/SteamNimmersatt/AdvancedAiCommand2]GitHub Repository[/url]
+Source code and issue tracker: github.com/SteamNimmersatt/AdvancedAiCommand2
 
 [list]
 [*]Report bugs and feature requests on GitHub.
