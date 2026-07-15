@@ -16,7 +16,7 @@
 	Nothing. The callback is invoked with: [_radius, _threshold, _patrolChance, _holdChance]
 */
 
-params [["_callback", {}, [{}]], ["_defaultValues", [50, 3, 10, 0], [[]], [4]]];
+params [["_callback", {}, [{}]], ["_defaultValues", [100, 1, 33, 0], [[]], [4]]];
 
 _defaultValues params [["_defaultRadius", 50, [0]], ["_defaultThreshold", 3, [0]], ["_defaultPatrol", 10, [0]], ["_defaultHold", 0, [0]]];
 
