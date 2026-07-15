@@ -48,6 +48,16 @@ if (isNull _group) exitWith {
 	_x doFollow (leader _group);
 } forEach units _group;
 
+// Exit static weapons that units may have mounted during CBA_fnc_taskDefend
+{
+    private _unitVehicle = vehicle _x;
+    if (_unitVehicle != _x) then {
+        unassignVehicle _x;
+        doGetOut _x;
+        [AIC_LOGLEVEL_DEBUG, format ["cancelDefendActionHandler: Unit %1 exiting vehicle/static weapon.", name _x]] call AIC_fnc_log;
+    };
+} forEach (units _group);
+
 // Clear the defending flag so the shield icon disappears (both locations)
 _group setVariable ["AIC_IsDefending", false, true];
 missionNamespace setVariable [format ["AIC_IsDefending_%1", groupId _group], false, true];
