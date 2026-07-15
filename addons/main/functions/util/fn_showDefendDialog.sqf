@@ -238,6 +238,7 @@ uiNamespace setVariable ["AIC_DefendInput_EditPatrol", nil];
 uiNamespace setVariable ["AIC_DefendInput_EditHold", nil];
 uiNamespace setVariable ["AIC_DefendInput_Controls", nil];
 
-if (!_cancelled) then {
-	[_radius, _threshold, _patrolChance, _holdChance] call _callback;
-};
+// Always call the callback — even on cancel, so the waypoint is finalized with default values.
+// This is important for DEFEND waypoints which use an AWAITING_PARAMS sentinel to delay
+// Arma waypoint creation until the user confirms the dialog.
+[_radius, _threshold, _patrolChance, _holdChance] call _callback;

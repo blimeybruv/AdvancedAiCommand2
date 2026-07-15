@@ -259,9 +259,17 @@ if (isServer) then {
 								_priorWaypointDurationEnabled = true;
 							};
 
-							// Add waypoint object to group
-							private _wpExactPlacement = -1;
-							private _wpObject = _group addWaypoint [_wpPosition, _wpExactPlacement];
+							// DEFEND type "AWAITING_PARAMS" check: if the user hasn't confirmed the
+							// defend dialog yet, skip creating the Arma waypoint entirely.
+							// The polling loop will retry on the next cycle once parameters are finalized.
+							if (_wpType == "DEFEND" && {!isNil "_wpStatement" && {_wpStatement == "AWAITING_PARAMS"}}) then {
+								[AIC_LOGLEVEL_DEBUG, format["Skipping DEFEND waypoint %1 — AWAITING_PARAMS.", _wpIndex]] call AIC_fnc_log;
+								// Reset duration flag — no waypoint was created for this iteration
+								_priorWaypointDurationEnabled = false;
+							} else {
+								// Add waypoint object to group
+								private _wpExactPlacement = -1;
+								private _wpObject = _group addWaypoint [_wpPosition, _wpExactPlacement];
 
 							// DEFEND type: replace with MOVE waypoint + CBA_fnc_taskDefend as completion statement
 							// Must be handled BEFORE setWaypointType since "DEFEND" is not a valid Arma enum value
@@ -287,8 +295,8 @@ if (isServer) then {
 									};
 								};
 
-								_wpDefendStatement = format ["[group this, %1, %2, %3, %4] call AIC_fnc_setDefendActive;", _defendRadius, _defendThreshold, _defendPatrol, _defendHold];
-								[AIC_LOGLEVEL_DEBUG, format["Setting up defend/garrison waypoint with CBA_fnc_taskDefend. _defendRadius=%1, _defendThreshold=%2, _defendPatrol=%3, _defendHold=%4.", _defendRadius, _defendThreshold, _defendPatrol, _defendHold]] call AIC_fnc_log;
+							_wpDefendStatement = format ["[group this, %1, %2, %3, %4] call AIC_fnc_setDefendActive;", _defendRadius, _defendThreshold, _defendPatrol, _defendHold];
+							[AIC_LOGLEVEL_DEBUG, format["Setting up defend/garrison waypoint with CBA_fnc_taskDefend. _defendRadius=%1, _defendThreshold=%2, _defendPatrol=%3, _defendHold=%4.", _defendRadius, _defendThreshold, _defendPatrol, _defendHold]] call AIC_fnc_log;
 							};
 
 							// ATTACK type: replace with SAD waypoint + CBA_fnc_taskAttack as completion statement
@@ -366,6 +374,7 @@ if (isServer) then {
 							[AIC_LOGLEVEL_DEBUG, format["Waypoint of type '%1' has condition '%2' and statement: '%3'.", _wpType, _wpStatementCondition, _wpStatement]] call AIC_fnc_log;
 							_wpObject setWaypointStatements [_wpStatementCondition, _wpStatement];
 						};
+					};
 					} forEach _groupControlWaypointArray;
 
 					if (count (waypoints _group)==0) then {

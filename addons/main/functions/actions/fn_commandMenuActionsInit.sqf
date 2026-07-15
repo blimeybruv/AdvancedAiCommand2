@@ -758,7 +758,17 @@ AIC_fnc_setDefendWpTypeActionHandler = {
 
 	_actionParams params [["_type", "DEFEND"], ["_label", "Defend / Garrison"]];
 	
-	// Show the defend dialog, then set the waypoint type in the callback
+	// Set the waypoint to DEFEND type with AWAITING_PARAMS sentinel so the polling loop
+	// skips creating the Arma waypoint until the user confirms the dialog.
+	// This prevents the group from reaching the waypoint before parameters are configured.
+	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
+	_waypoint set [AIC_Waypoint_ArrayIndex_Statement, "AWAITING_PARAMS"];
+	_waypoint set [AIC_Waypoint_ArrayIndex_Type, _type];
+	[_group, _waypoint] call AIC_fnc_setWaypoint;
+	[_groupControlId, "REFRESH_WAYPOINTS", []] call AIC_fnc_groupControlEventHandler;
+	
+	// Show the defend dialog, then finalize the waypoint parameters in the callback
 	private _callback = {
 		params ["_radius", "_threshold", "_patrolChance", "_holdChance"];
 		
@@ -1113,7 +1123,7 @@ AIC_fnc_setWaypointDurationActionHandler = {
 ["WAYPOINT","Move (default)",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["MOVE","'Move'"]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Attack (CBA)",["Set Waypoint Type","Offensive WP Types"],AIC_fnc_setWaypointAttackActionHandler,[]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Seek & Destroy",["Set Waypoint Type","Offensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["SAD","'Seek & Destroy'"]] call AIC_fnc_addCommandMenuAction;
-["WAYPOINT","Defend / Garrison (CBA)",["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setDefendWpTypeActionHandler,["DEFEND","'Defend / Garrison'"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Defend - Garrison / Patrol (CBA)",["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setDefendWpTypeActionHandler,["DEFEND","'Defend - Garrison / Patrol (CBA)'"]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Hold",["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["HOLD","'Hold'"]] call AIC_fnc_addCommandMenuAction;
 
 // Delete WP
