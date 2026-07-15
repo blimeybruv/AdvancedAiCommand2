@@ -263,11 +263,26 @@ if (isServer) then {
 							if (_wpType == "DEFEND") then {
 								_wpType = "MOVE";
 								private _defendRadius = 50;
-								if (!isNil "_wpCompletionRadius") then {
-									_defendRadius = _wpCompletionRadius;
+								private _defendThreshold = 3;
+								private _defendPatrol = 10;
+								private _defendHold = 0;
+
+								// Parse defend parameters from the waypoint statement if it contains DEFEND_PARAMS
+								if (!isNil "_wpStatement") then {
+									if (_wpStatement select [0, 14] == "DEFEND_PARAMS:") then {
+										private _parts = _wpStatement splitString ":";
+										if (count _parts >= 5) then {
+											_defendRadius = parseNumber (_parts select 1);
+											_defendThreshold = parseNumber (_parts select 2);
+											_defendPatrol = parseNumber (_parts select 3);
+											_defendHold = parseNumber (_parts select 4);
+										};
+										_wpStatement = "";
+									};
 								};
-								_wpDefendStatement = format ["[group this, %1] call AIC_fnc_setDefendActive;", _defendRadius];
-								[AIC_LOGLEVEL_DEBUG, format["Setting up defend/garrison waypoint with CBA_fnc_taskDefend. _defendRadius=%1.", _defendRadius]] call AIC_fnc_log;
+
+								_wpDefendStatement = format ["[group this, %1, %2, %3, %4] call AIC_fnc_setDefendActive;", _defendRadius, _defendThreshold, _defendPatrol, _defendHold];
+								[AIC_LOGLEVEL_DEBUG, format["Setting up defend/garrison waypoint with CBA_fnc_taskDefend. _defendRadius=%1, _defendThreshold=%2, _defendPatrol=%3, _defendHold=%4.", _defendRadius, _defendThreshold, _defendPatrol, _defendHold]] call AIC_fnc_log;
 							};
 
 							// ATTACK type: replace with SAD waypoint + CBA_fnc_taskAttack as completion statement

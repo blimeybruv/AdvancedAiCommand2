@@ -10,17 +10,23 @@
 
 	Parameter(s):
 	_this select 0: GROUP - The group to set defending
-	_this select 1: NUMBER - Defend radius
+	_this select 1: NUMBER - Defend radius (Default: 50)
+	_this select 2: NUMBER - Minimum building positions to consider for garrison (Default: 3)
+	_this select 3: NUMBER - Chance for each unit to patrol instead of garrison (0-100, Default: 10)
+	_this select 4: NUMBER - Chance for each unit to hold garrison position in combat (0-100, Default: 0)
 
 	Returns:
 	Nothing
 */
 
-params ["_group", "_defendRadius"];
+params [["_group", grpNull, [grpNull]], ["_defendRadius", 50, [0]], ["_threshold", 3, [0]], ["_patrolChance", 10, [0]], ["_holdChance", 0, [0]]];
 
-[AIC_LOGLEVEL_DEBUG, format ["setDefendActive called: group=%1, _defendRadius=%2", groupId _group, _defendRadius]] call AIC_fnc_log;
+[AIC_LOGLEVEL_DEBUG, format ["setDefendActive called: group=%1, _defendRadius=%2, _threshold=%3, _patrolChance=%4, _holdChance=%5", groupId _group, _defendRadius, _threshold, _patrolChance, _holdChance]] call AIC_fnc_log;
 
-[_group, _group, _defendRadius] call CBA_fnc_taskDefend;
+private _patrolFraction = _patrolChance / 100;
+private _holdFraction = _holdChance / 100;
+
+[_group, _group, _defendRadius, _threshold, _patrolFraction, _holdFraction] call CBA_fnc_taskDefend;
 
 [AIC_LOGLEVEL_DEBUG, format ["setDefendActive: CBA_fnc_taskDefend completed for group %1", groupId _group]] call AIC_fnc_log;
 

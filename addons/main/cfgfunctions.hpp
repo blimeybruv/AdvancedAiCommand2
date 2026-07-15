@@ -175,6 +175,7 @@ class AICommand
 		class getInVehicle {description = ""; recompile = 1};
 		class showHeightInputDialog {description = ""; recompile = 1};
 		class showRadiusInputDialog {description = ""; recompile = 1};
+		class showDefendDialog {description = ""; recompile = 1};
 	};
 	
 };
