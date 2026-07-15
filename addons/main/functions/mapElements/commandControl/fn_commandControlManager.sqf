@@ -208,9 +208,15 @@ if (isServer) then {
 
 	// Manage group waypoints
 	[] spawn {
-		while { true } do {
+	while { true } do {
 			{
 				private _group = _x;
+
+				// Skip waypoint management for groups actively defending (CBA handles patrol/garrision waypoints)
+				if (_group getVariable ["AIC_IsDefending", false]) then {
+					continue;
+				};
+
 				private _lastWpRevision = _group getVariable ["AIC_Server_Last_Wp_Revision", 0];
 				private _groupWaypoints = waypoints _group;
 				private _groupControlWaypoints = [_group] call AIC_fnc_getAllActiveWaypoints;

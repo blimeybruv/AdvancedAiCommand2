@@ -64,6 +64,14 @@ AIC_fnc_addWaypointInitNilWaypointParams = {
 private _group = param [0];
 private _waypointParams = param [1];
 
+// If the group was actively defending, placing a new waypoint cancels defending mode.
+// This allows the server-side waypoint manager to resume controlling waypoints.
+if (_group getVariable ["AIC_IsDefending", false]) then {
+	_group setVariable ["AIC_IsDefending", false, true];
+	missionNamespace setVariable [format ["AIC_IsDefending_%1", groupId _group], false, true];
+	[AIC_LOGLEVEL_DEBUG, format["Cleared defending state for group %1 (new waypoint placed)", groupId _group]] call AIC_fnc_log;
+};
+
 private _wpIndex = _waypointParams select AIC_Waypoint_ArrayIndex_Index;
 if (!isNil "_wpIndex") exitWith {
 	private _msg = "fn_addWaypoint was given a waypoint with index != nil (AIC_Waypoint_ArrayIndex_Index). The index must be nil.";
