@@ -69,6 +69,8 @@ class AICommand
 		class selectGroupControlPosition {description = ""; recompile = 1};
 		class selectGroupControlVehicle {description = ""; recompile = 1};
 		class applyFlyInHeight {description = ""; recompile = 1};
+		class cancelDefendActionHandler {description = ""; recompile = 1};
+		class setDefendActive {description = ""; recompile = 1};
 	};
 	
 	

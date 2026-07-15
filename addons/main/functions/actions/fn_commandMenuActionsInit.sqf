@@ -69,6 +69,16 @@ AIC_fnc_hasGroupCargo = {
 	_group getVariable ["AIC_Has_Group_Cargo",false];
 };
 
+AIC_fnc_isDefending = {
+	params ["_groupControlId"];
+	private "_group";
+	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	// Check both the group variable and missionNamespace (missionNamespace survives waypoint rebuilds)
+	private _result = _group getVariable ["AIC_IsDefending", false] || { missionNamespace getVariable [format ["AIC_IsDefending_%1", groupId _group], false] };
+	[AIC_LOGLEVEL_DEBUG, format ["isDefending check: group=%1, _groupControlId=%2, isDefending=%3", groupId _group, _groupControlId, _result]] call AIC_fnc_log;
+	_result;
+};
+
 /*
 
 	Add Waypoints
@@ -936,6 +946,8 @@ AIC_fnc_setWaypointDurationActionHandler = {
 /* 
     Menu "GROUP" (which opens when a user clicks on a group icon)
 */
+
+["GROUP","Cancel Defend / Garrison",[],AIC_fnc_cancelDefendActionHandler,[],AIC_fnc_isDefending] call AIC_fnc_addCommandMenuAction;
 
 // Add Waypoints
 ["GROUP","Add Waypoints",[],AIC_fnc_addWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;

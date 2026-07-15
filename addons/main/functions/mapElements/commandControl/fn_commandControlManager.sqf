@@ -218,6 +218,10 @@ if (isServer) then {
 				private _groupControlWaypointArray = _groupControlWaypoints select 1;
 
 				if (_currentWpRevision != _lastWpRevision) then {
+					// Clear defending state when waypoints are rebuilt (unless actively defending)
+					if !(missionNamespace getVariable [format ["AIC_IsDefending_%1", groupId _group], false]) then {
+						_group setVariable ["AIC_IsDefending", false, true];
+					};
 					while { (count (waypoints _group)) > 0 } do {
 						deleteWaypoint ((waypoints _group) select 0);
 					};
@@ -262,7 +266,7 @@ if (isServer) then {
 								if (!isNil "_wpCompletionRadius") then {
 									_defendRadius = _wpCompletionRadius;
 								};
-								_wpDefendStatement = format ["[group this, group this, %1] call CBA_fnc_taskDefend; [group this, 'Garrisoning at waypoint.'] call AIC_fnc_msgSideChat;", _defendRadius];
+								_wpDefendStatement = format ["[group this, %1] call AIC_fnc_setDefendActive;", _defendRadius];
 								[AIC_LOGLEVEL_DEBUG, format["Setting up defend/garrison waypoint with CBA_fnc_taskDefend. _defendRadius=%1.", _defendRadius]] call AIC_fnc_log;
 							};
 

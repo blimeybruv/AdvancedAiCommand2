@@ -33,6 +33,27 @@ AIC_fnc_setInteractiveIconPosition(_icon,_groupPosition);
 
 [_icon, _group] call AIC_fnc_drawInteractiveIcon;
 
+// Draw shield icon if group is defending
+// Check both the group variable and missionNamespace (missionNamespace survives waypoint rebuilds)
+private _isDefending = _group getVariable ["AIC_IsDefending", false] || { missionNamespace getVariable [format ["AIC_IsDefending_%1", groupId _group], false] };
+if (_isDefending) then {
+	private _shieldColor = ((AIC_fnc_getGroupControlColor(_groupControlId)) select 1) + [1];
+	private _shieldPosition = [
+		(_groupPosition select 0) + 5,
+		(_groupPosition select 1)
+	];
+	AIC_MAP_CONTROL drawIcon [
+		"\a3\ui_f\data\igui\cfg\simpletasks\types\defend_ca.paa",
+		_shieldColor,
+		_shieldPosition,
+		18,
+		18,
+		0,
+		"",
+		1
+	];
+};
+
 // Draw waypoints
 
 private ["_waypointIcons"];
