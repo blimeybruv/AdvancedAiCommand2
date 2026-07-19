@@ -995,7 +995,7 @@ AIC_fnc_setWaypointDurationActionHandler = {
 ["GROUP","Add Waypoints",[],AIC_fnc_addWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
 
 // Clear all waypoints
-["GROUP","Confirm Cancel All",["Clear All Waypoints"],AIC_fnc_clearAllWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
+["GROUP","Confirm Clear All",["Clear All Waypoints"],AIC_fnc_clearAllWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
 
 // Combat Mode
 ["GROUP","Forget all current targets",["Combat Mode"],AIC_fnc_forgetTargetsActionHandler] call AIC_fnc_addCommandMenuAction;
