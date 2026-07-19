@@ -262,8 +262,8 @@ if (isServer) then {
 							// DEFEND type "AWAITING_PARAMS" check: if the user hasn't confirmed the
 							// defend dialog yet, skip creating the Arma waypoint entirely.
 							// The polling loop will retry on the next cycle once parameters are finalized.
-							if (_wpType == "DEFEND" && {!isNil "_wpStatement" && {_wpStatement == "AWAITING_PARAMS"}}) then {
-								[AIC_LOGLEVEL_DEBUG, format["Skipping DEFEND waypoint %1 — AWAITING_PARAMS.", _wpIndex]] call AIC_fnc_log;
+							if ((_wpType == "DEFEND" || {_wpType == "ATTACK"}) && {!isNil "_wpStatement" && {_wpStatement == "AWAITING_PARAMS"}}) then {
+								[AIC_LOGLEVEL_DEBUG, format["Skipping %1 waypoint %2 — AWAITING_PARAMS.", _wpType, _wpIndex]] call AIC_fnc_log;
 								// Reset duration flag — no waypoint was created for this iteration
 								_priorWaypointDurationEnabled = false;
 							} else {

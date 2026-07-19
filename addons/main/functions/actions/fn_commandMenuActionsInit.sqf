@@ -860,16 +860,28 @@ AIC_fnc_setWaypointAttackActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId","_waypointId"];
 
+	// Set ATTACK type with AWAITING_PARAMS sentinel so the polling loop
+	// skips creating the Arma waypoint until the user confirms the dialog.
+	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
+	_waypoint set [AIC_Waypoint_ArrayIndex_Type, "ATTACK"];
+	_waypoint set [AIC_Waypoint_ArrayIndex_Statement, "AWAITING_PARAMS"];
+	[_group, _waypoint] call AIC_fnc_setWaypoint;
+	[_groupControlId, "REFRESH_WAYPOINTS", []] call AIC_fnc_groupControlEventHandler;
+
+	// Show radius dialog (blocks until user confirms or cancels)
 	private _radius = ["Enter Attack Radius"] call AIC_fnc_showRadiusInputDialog;
 	if (_radius <= 0) exitWith {
+		// User cancelled — revert to original state (type stays ATTACK with AWAITING_PARAMS,
+		// which means the waypoint will never create an Arma waypoint until retyped)
 		[AIC_LOGLEVEL_DEBUG, "AIC_fnc_setWaypointAttackActionHandler - User cancelled radius input."] call AIC_fnc_log;
 	};
 
-	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
-	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
-
+	// User confirmed — finalize the waypoint with the chosen radius
+	_waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
 	_waypoint set [AIC_Waypoint_ArrayIndex_Type, "ATTACK"];
 	_waypoint set [AIC_Waypoint_ArrayIndex_CompletionRadius, _radius];
+	_waypoint set [AIC_Waypoint_ArrayIndex_Statement, ""];
 	[_group, _waypoint] call AIC_fnc_setWaypoint;
 	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 

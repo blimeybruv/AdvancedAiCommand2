@@ -16,7 +16,7 @@ private _logLevelNumeric = param [0];
 private _msg = param [1];
 
 // TODO CBA setting
-private _logLevelSetting = 1;
+private _logLevelSetting = 0;
 
 if (_logLevelNumeric < _logLevelSetting) exitWith {}; // Don't log if the message is below our current log level setting.
 
