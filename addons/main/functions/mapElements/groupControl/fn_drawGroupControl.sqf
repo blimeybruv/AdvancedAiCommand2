@@ -91,7 +91,7 @@ private _addingWaypoints = AIC_fnc_getGroupControlAddingWaypoints(_groupControlI
 	AIC_MAP_CONTROL drawLine [
 		_lineFromPosition,
 		_lineToPosition,
-	if (_wpState != AIC_Waypoint_State_Active) then { [0.5, 0.5, 0.5, 0.6] } else { _lineColor }
+		_lineColor
 	];
 } forEach _waypointIcons;
 
