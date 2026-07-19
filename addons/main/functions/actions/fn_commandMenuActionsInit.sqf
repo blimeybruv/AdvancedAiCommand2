@@ -105,7 +105,11 @@ AIC_fnc_clearAllWaypointsActionHandler = {
 	_menuParams params ["_groupControlId"];
 	private ["_group"];
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
-	[_group] call AIC_fnc_disableAllWaypoints;	
+	// Delete all waypoints (set state to "deleted") so they don't reappear when new waypoints are added
+	private _waypoints = [_group] call AIC_fnc_getAllWaypoints;
+	{
+		[_group, _x select 0] call AIC_fnc_deleteWaypoint;
+	} forEach (_waypoints select 1);
 	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 	hint ("All waypoints cleared");
 };
