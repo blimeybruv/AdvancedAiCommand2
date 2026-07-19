@@ -1,4 +1,4 @@
-#include "..\..\functions.h"
+#include "\z\aicommand2\addons\main\functions\functions.h"
 
 /*
 	Author: [SA] Duda
@@ -74,7 +74,24 @@ if(isNil "_groupControlId") then {
 
 	if(_event == "RIGHT_MOUSE_BUTTON_CLICK_MAP" ) then {
 		if(AIC_fnc_getGroupControlAddingWaypoints(_groupControlId)) then {
+			// Activate all pending waypoints — player has finished editing
+			private _waypointsContainer = _group getVariable "AIC_Waypoints";
+			private _allWaypoints = _waypointsContainer select 1;
+			{
+				private _wpState = _x select AIC_Waypoint_ArrayIndex_State;
+				// Transition "drafted" → "active"
+				if (_wpState == AIC_Waypoint_State_Drafted) then {
+					_x set [AIC_Waypoint_ArrayIndex_State, AIC_Waypoint_State_Active];
+				};
+			} forEach _allWaypoints;
+			// Bump revision to trigger server-side waypoint rebuild
+			_waypointsContainer set [0, (_waypointsContainer select 0) + 1];
+			// Broadcast to all machines (incl. server) so the server's polling loop
+			// picks up the drafted→active transition and creates Arma waypoints
+			_group setVariable ["AIC_Waypoints", _waypointsContainer, true];
+
 			AIC_fnc_setGroupControlAddingWaypoints(_groupControlId,false);
+			[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 			missionNamespace setVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], -1];
 		};
 	};
@@ -85,14 +102,15 @@ if(isNil "_groupControlId") then {
 			private _oldPendingWp = missionNamespace getVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], -1];
 			// Clear previous pending config before adding a new waypoint
 			missionNamespace setVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], -1];
-			private _waypointParams = [nil, (AIC_fnc_getMouseMapPosition()), false, "MOVE"];
+			// Create waypoint in "drafted" state (via third param)
+			private _waypointParams = [nil, (AIC_fnc_getMouseMapPosition()), AIC_Waypoint_State_Drafted, "MOVE"];
 			private _addedWaypoint = [_group, _waypointParams] call AIC_fnc_addWaypoint;
 			[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 			// Track the last placed waypoint as pending configuration and open its menu
 			private _lastWpId = _addedWaypoint select AIC_Waypoint_ArrayIndex_Index;
 			missionNamespace setVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], _lastWpId];
 			if(_oldPendingWp == -1) then {
-				systemChat "[AAC2] - Waypoint added. Use the menu to configure it. Left-click to add another. Right-click to finish.";
+				systemChat "[AAC2] - Waypoint added. Use the menu to configure it. Left-click to add another. Right-click to finish. Delete a WP with the 'Delete' key while the mouse is above it.";
 			};
 			// Close any open command menu first, then re-open with new wp data (prevents toggle-off behavior)
 			showCommandingMenu "";
@@ -117,7 +135,7 @@ if(isNil "_groupControlId") then {
 
 		_waypointIconCount = count _waypointIcons;
 		
-		_waypoints = [_group] call AIC_fnc_getAllActiveWaypoints;
+		_waypoints = [_group] call AIC_fnc_getAllWaypoints;
 		_color = AIC_fnc_getGroupControlColor(_groupControlId);
 
 		_currentWpRevision = _waypoints select 0;
@@ -125,18 +143,25 @@ if(isNil "_groupControlId") then {
 		
 		_waypointIconIndex = 0;
 
+		// Filter out deleted waypoints before iteration so _waypointIconIndex stays synchronized with _waypointIcons
+		private _visibleWaypoints = [];
+		{
+			if ((_x select AIC_Waypoint_ArrayIndex_State) != AIC_Waypoint_State_Deleted) then {
+				_visibleWaypoints pushBack _x;
+			};
+		} forEach _waypointsArray;
 		
 		private ["_waypointIcon","_wpIconId","_waypointType","_waypointIconSet","_interactiveIconId","_interactiveIconPosition","_eventHandlerScript","_eventHandlerScriptParams"];
 		
 		{
-			
 			_waypointType = _x select 3;
 			_waypointIconSet = ["MOVE",_color] call AIC_fnc_getGroupControlWpIconSet;
 
 			if(_waypointIconIndex >= _waypointIconCount) then {
 				_wpIconId = [_waypointIconSet, _x select 1] call AIC_fnc_createInteractiveIcon;
 				[_groupControlId,_wpIconId] call AIC_fnc_addMapElementChild;
-				_waypointIcons set [_waypointIconIndex,[_waypointIconIndex,_wpIconId]];
+				private _wpState = _x select AIC_Waypoint_ArrayIndex_State;
+				_waypointIcons set [_waypointIconIndex,[_waypointIconIndex,_wpIconId,_wpState]];
 				_eventHandlerScript = {
 					private ["_event","_groupControlId","_waypointId","_params"];
 					_event = param [1];
@@ -157,12 +182,12 @@ if(isNil "_groupControlId") then {
 				_eventHandlerScriptParams = [_groupControlId,_x select 0];
 				AIC_fnc_setInteractiveIconEventHandlerScriptParams(_interactiveIconId,_eventHandlerScriptParams);
 				//diag_log format ["Setting Waypoints: %1, %2, %3", _x, _interactiveIconId, _eventHandlerScriptParams];
-				_waypointIcons set [_waypointIconIndex,_waypointIcon];
+				_waypointIcons set [_waypointIconIndex,[_waypointIconIndex,_interactiveIconId,_x select AIC_Waypoint_ArrayIndex_State]];
 			};
 			
 			_waypointIconIndex = _waypointIconIndex + 1;
 			
-		} forEach _waypointsArray;
+		} forEach _visibleWaypoints;
 	
 		if(_waypointIconIndex < _waypointIconCount) then {
 			for "_i" from _waypointIconIndex to (_waypointIconCount-1) do
@@ -180,4 +205,3 @@ if(isNil "_groupControlId") then {
 	};
 
 };
-

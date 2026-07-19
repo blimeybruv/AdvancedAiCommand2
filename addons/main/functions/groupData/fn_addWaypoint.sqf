@@ -1,4 +1,4 @@
-#include "\z\aicommand2\addons\main\functions\functions.h"
+ #include "\z\aicommand2\addons\main\functions\functions.h"
 
 /*
 	Author: [SA] Duda
@@ -35,8 +35,8 @@ AIC_fnc_addWaypointInitNilWaypointParams = {
 	private _arrayLength = count _waypointParams;
 	private _defaultVal = "";
 
-	private _wpDisabledDefaultVal = false;
-	[_waypointParams, AIC_Waypoint_ArrayIndex_Disabled, _wpDisabledDefaultVal] call AIC_fnc_initArrayItem;
+	private _wpStateDefaultVal = AIC_Waypoint_State_Drafted;
+	[_waypointParams, AIC_Waypoint_ArrayIndex_State, _wpStateDefaultVal] call AIC_fnc_initArrayItem;
 
 	private _wpTypeDefaultVal = "MOVE";
 	[_waypointParams, AIC_Waypoint_ArrayIndex_Type, _wpTypeDefaultVal] call AIC_fnc_initArrayItem;
@@ -117,19 +117,16 @@ if (!isNil "_groupFlyInHeightMode") then {
 
 // Get all currently known waypoints
 private _allWaypointsContainer = _group getVariable ["AIC_Waypoints", [0, []]];
-private _revision = _allWaypointsContainer select 0;
 private _allWaypointsArray = _allWaypointsContainer select 1;
 
 // Set waypoint index
 private _wpIndex = count _allWaypointsArray; // the length of the array storing all waypoints is the index of the new waypoint
 _waypointParams set [AIC_Waypoint_ArrayIndex_Index, _wpIndex];
 
-// Add waypoint to the other waypoints
+// Add waypoint to the other waypoints (revision is NOT bumped for disabled waypoints;
+// the caller must bump the revision separately when enabling the waypoint, e.g. on right-click)
 _allWaypointsArray pushBack _waypointParams;
-
-// Increase the "revision" for the next waypoint
-_revision = _revision + 1;
-_group setVariable ["AIC_Waypoints", [_revision, _allWaypointsArray], true];
+_group setVariable ["AIC_Waypoints", [_allWaypointsContainer select 0, _allWaypointsArray], true];
 
 private _logMsg = "fn_addWaypoint added a waypoint: " + ([_waypointParams] call AIC_fnc_toStringWaypoint);
 [AIC_LOGLEVEL_DEBUG, _logMsg] call AIC_fnc_log;

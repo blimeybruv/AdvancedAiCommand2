@@ -27,5 +27,5 @@ private ["_waypoint"];
 
 _waypoint = [_group, _waypointIndex] call AIC_fnc_getWaypoint;
 
-_waypoint set [2,true];
+_waypoint set [AIC_Waypoint_ArrayIndex_State, AIC_Waypoint_State_Disabled];
 [_group, _waypoint] call AIC_fnc_setWaypoint;

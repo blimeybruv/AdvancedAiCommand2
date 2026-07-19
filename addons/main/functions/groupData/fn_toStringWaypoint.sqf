@@ -21,7 +21,7 @@ for "_fieldIndex" from 0 to (_arrayLength - 1) do {
 	private _fieldName = switch (_fieldIndex) do {
 		case AIC_Waypoint_ArrayIndex_Index: {"Index"};
 		case AIC_Waypoint_ArrayIndex_Position: {"Position"};
-		case AIC_Waypoint_ArrayIndex_Disabled: {"Disabled"};
+		case AIC_Waypoint_ArrayIndex_State: {"State"};
 		case AIC_Waypoint_ArrayIndex_Type: {"Type"};
 		case AIC_Waypoint_ArrayIndex_Statement: {"Statement"};
 		case AIC_Waypoint_ArrayIndex_Condition: {"Condition"};

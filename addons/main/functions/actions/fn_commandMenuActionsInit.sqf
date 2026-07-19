@@ -717,7 +717,7 @@ AIC_fnc_deleteWaypointHandler = {
 	_menuParams params ["_groupControlId","_waypointId"];
 	private ["_group"];
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
-	[_group,_waypointId] call AIC_fnc_disableWaypoint;
+	[_group,_waypointId] call AIC_fnc_deleteWaypoint;
 	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 };
 
@@ -758,12 +758,8 @@ AIC_fnc_setDefendWpTypeActionHandler = {
 
 	_actionParams params [["_type", "DEFEND"], ["_label", "Defend / Garrison"]];
 	
-	// Set the waypoint to DEFEND type with AWAITING_PARAMS sentinel so the polling loop
-	// skips creating the Arma waypoint until the user confirms the dialog.
-	// This prevents the group from reaching the waypoint before parameters are configured.
 	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
 	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
-	_waypoint set [AIC_Waypoint_ArrayIndex_Statement, "AWAITING_PARAMS"];
 	_waypoint set [AIC_Waypoint_ArrayIndex_Type, _type];
 	[_group, _waypoint] call AIC_fnc_setWaypoint;
 	[_groupControlId, "REFRESH_WAYPOINTS", []] call AIC_fnc_groupControlEventHandler;
@@ -860,20 +856,17 @@ AIC_fnc_setWaypointAttackActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId","_waypointId"];
 
-	// Set ATTACK type with AWAITING_PARAMS sentinel so the polling loop
-	// skips creating the Arma waypoint until the user confirms the dialog.
 	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
 	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
 	_waypoint set [AIC_Waypoint_ArrayIndex_Type, "ATTACK"];
-	_waypoint set [AIC_Waypoint_ArrayIndex_Statement, "AWAITING_PARAMS"];
 	[_group, _waypoint] call AIC_fnc_setWaypoint;
 	[_groupControlId, "REFRESH_WAYPOINTS", []] call AIC_fnc_groupControlEventHandler;
 
 	// Show radius dialog (blocks until user confirms or cancels)
 	private _radius = ["Enter Attack Radius"] call AIC_fnc_showRadiusInputDialog;
 	if (_radius <= 0) exitWith {
-		// User cancelled — revert to original state (type stays ATTACK with AWAITING_PARAMS,
-		// which means the waypoint will never create an Arma waypoint until retyped)
+		// User cancelled — waypoint remains disabled (was never enabled).
+		// The waypoint type stays ATTACK but won't execute because it's still disabled.
 		[AIC_LOGLEVEL_DEBUG, "AIC_fnc_setWaypointAttackActionHandler - User cancelled radius input."] call AIC_fnc_log;
 	};
 

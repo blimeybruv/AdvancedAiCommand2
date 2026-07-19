@@ -242,7 +242,7 @@ if (isServer) then {
 
 							private _wpIndex = _waypoint select AIC_Waypoint_ArrayIndex_Index;
 							private _wpPosition = _waypoint select AIC_Waypoint_ArrayIndex_Position;
-							private _wpDisabled = _waypoint select AIC_Waypoint_ArrayIndex_Disabled;
+							private _wpState = _waypoint select AIC_Waypoint_ArrayIndex_State;
 							private _wpType = _waypoint select AIC_Waypoint_ArrayIndex_Type;
 							private _wpStatement = _waypoint select AIC_Waypoint_ArrayIndex_Statement;
 							private _wpCondition = _waypoint select AIC_Waypoint_ArrayIndex_Condition;
@@ -259,17 +259,9 @@ if (isServer) then {
 								_priorWaypointDurationEnabled = true;
 							};
 
-							// DEFEND type "AWAITING_PARAMS" check: if the user hasn't confirmed the
-							// defend dialog yet, skip creating the Arma waypoint entirely.
-							// The polling loop will retry on the next cycle once parameters are finalized.
-							if ((_wpType == "DEFEND" || {_wpType == "ATTACK"}) && {!isNil "_wpStatement" && {_wpStatement == "AWAITING_PARAMS"}}) then {
-								[AIC_LOGLEVEL_DEBUG, format["Skipping %1 waypoint %2 — AWAITING_PARAMS.", _wpType, _wpIndex]] call AIC_fnc_log;
-								// Reset duration flag — no waypoint was created for this iteration
-								_priorWaypointDurationEnabled = false;
-							} else {
-								// Add waypoint object to group
-								private _wpExactPlacement = -1;
-								private _wpObject = _group addWaypoint [_wpPosition, _wpExactPlacement];
+							// Add waypoint object to group
+							private _wpExactPlacement = -1;
+							private _wpObject = _group addWaypoint [_wpPosition, _wpExactPlacement];
 
 							// DEFEND type: replace with MOVE waypoint + CBA_fnc_taskDefend as completion statement
 							// Must be handled BEFORE setWaypointType since "DEFEND" is not a valid Arma enum value
@@ -374,7 +366,6 @@ if (isServer) then {
 							[AIC_LOGLEVEL_DEBUG, format["Waypoint of type '%1' has condition '%2' and statement: '%3'.", _wpType, _wpStatementCondition, _wpStatement]] call AIC_fnc_log;
 							_wpObject setWaypointStatements [_wpStatementCondition, _wpStatement];
 						};
-					};
 					} forEach _groupControlWaypointArray;
 
 					if (count (waypoints _group)==0) then {

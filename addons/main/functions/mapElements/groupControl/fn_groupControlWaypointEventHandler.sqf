@@ -34,7 +34,7 @@ if( _event == "SELECTED" ) then {
 
 // TODO event "DELETE_WAYPOINT_SELECTED" is not used anywhere?
 if( _event == "DELETE_WAYPOINT_SELECTED" || _event == "KEY_DOWN_211" ) then {
-	[_group,_waypointId] call AIC_fnc_disableWaypoint;
+	[_group,_waypointId] call AIC_fnc_deleteWaypoint;
 	showCommandingMenu "";
 	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 };

@@ -70,7 +70,15 @@ if(AIC_fnc_getMapElementForeground(_groupControlId)) then {
 	_lineColor = ((AIC_fnc_getGroupControlColor(_groupControlId)) select 1) + [0.4];
 };
 
+private _addingWaypoints = AIC_fnc_getGroupControlAddingWaypoints(_groupControlId);
 {
+	// _x is [_wpIndex, _interactiveIconId, _wpState]
+	private _wpState = if (count _x >= 3) then { _x select 2 } else { AIC_Waypoint_State_Active };
+	// Skip waypoints that should not be visible at all:
+	// - Deleted: always invisible (hard delete)
+	// - Drafted/Disabled: invisible outside of adding-waypoints mode
+	if (_wpState == AIC_Waypoint_State_Deleted) then { continue };
+	if ((_wpState == AIC_Waypoint_State_Drafted || _wpState == AIC_Waypoint_State_Disabled) && {!_addingWaypoints}) then { continue };
 	if(isNil "_priorWaypointPosition") then {
 		// Draw line back to group
 		_lineFromPosition = _groupPosition;
@@ -83,7 +91,7 @@ if(AIC_fnc_getMapElementForeground(_groupControlId)) then {
 	AIC_MAP_CONTROL drawLine [
 		_lineFromPosition,
 		_lineToPosition,
-		_lineColor
+	if (_wpState != AIC_Waypoint_State_Active) then { [0.5, 0.5, 0.5, 0.6] } else { _lineColor }
 	];
 } forEach _waypointIcons;
 
@@ -104,5 +112,40 @@ if(AIC_fnc_getGroupControlAddingWaypoints(_groupControlId)) then {
 // Draw the waypoint interactive icons on top of the line
 
 {
-	[_x select 1] call AIC_fnc_drawInteractiveIcon;
+	private _wpIconId = _x select 1;
+	// Skip waypoint icons that have been hidden (e.g., removed from the waypoint list)
+	if (!AIC_fnc_getMapElementVisible(_wpIconId)) then { continue };
+	private _wpState = if (count _x >= 3) then { _x select 2 } else { AIC_Waypoint_State_Active };
+	// Skip waypoints that should not be visible at all:
+	// - Deleted: always invisible (hard delete)
+	// - Drafted/Disabled: invisible outside of adding-waypoints mode
+	if (_wpState == AIC_Waypoint_State_Deleted) then { continue };
+	if ((_wpState == AIC_Waypoint_State_Drafted || _wpState == AIC_Waypoint_State_Disabled) && {!_addingWaypoints}) then { continue };
+	if (_wpState != AIC_Waypoint_State_Active) then {
+		// Draw disabled waypoint icon with reduced alpha
+		// Get the icon set (state-based: [unselected[], selected[], mouseOver[], pickedUp[]])
+		private _wpPos = AIC_fnc_getInteractiveIconPosition(_wpIconId);
+		private _wpIconSet = AIC_fnc_getInteractiveIconIconSet(_wpIconId);
+		if (!isNil "_wpIconSet") then {
+			// Draw each unselected icon with reduced alpha
+			private _unselectedIconIds = _wpIconSet select 0;
+			{
+				private _iconProps = AIC_fnc_getMapIconProperties(_x);
+				private _iconColor = +(_iconProps select 6);
+				_iconColor set [3, (_iconColor select 3) * 0.35];
+				AIC_MAP_CONTROL drawIcon [
+					_iconProps select 0,
+					_iconColor,
+					_wpPos,
+					_iconProps select 1,
+					_iconProps select 2,
+					0,
+					"",
+					_iconProps select 5
+				];
+			} forEach _unselectedIconIds;
+		};
+	} else {
+		[_x select 1] call AIC_fnc_drawInteractiveIcon;
+	};
 } forEach _waypointIcons;

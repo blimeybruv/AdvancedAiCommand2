@@ -35,6 +35,7 @@ class AICommand
 		class setGroupColor {description = ""; recompile = 1};
 		class getGroupColor {description = ""; recompile = 1};
 		class getAllActiveWaypoints {description = ""; recompile = 1};
+		class deleteWaypoint {description = ""; recompile = 1};
 		class getGroupActions {description = ""; recompile = 1};
 		class setGroupActions {description = ""; recompile = 1};
 		class getGroupAssignedVehicles {description = ""; recompile = 1};

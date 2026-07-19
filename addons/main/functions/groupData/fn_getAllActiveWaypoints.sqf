@@ -37,8 +37,9 @@ if (isNil "_allWaypointsArray") exitWith {
 private _activeWaypoints = [];
 {
 	private _waypoint = _x;
-	private _isDisabled = _waypoint select AIC_Waypoint_ArrayIndex_Disabled;
-	if (!_isDisabled) then {
+	private _wpState = _waypoint select AIC_Waypoint_ArrayIndex_State;
+	// Active waypoints are those in "active" state; also treat old boolean true as "disabled" for backward compat
+	if (_wpState == AIC_Waypoint_State_Active || {_wpState isEqualType false && {!_wpState}}) then {
 		_activeWaypoints pushBack _waypoint;
 	};
 } forEach _allWaypointsArray;
