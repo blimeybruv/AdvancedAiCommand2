@@ -13,12 +13,6 @@
 	Nothing
 */
 
-/*
-
-	Helper functions
-
-*/
-
 AIC_fnc_hasVehicleAssigned = {
 	params ["_groupControlId"];
 	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
@@ -79,12 +73,6 @@ AIC_fnc_isDefending = {
 	_result;
 };
 
-/*
-
-	Add Waypoints
-
-*/
-
 AIC_fnc_addWaypointsActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -92,13 +80,6 @@ AIC_fnc_addWaypointsActionHandler = {
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
 	AIC_fnc_setGroupControlAddingWaypoints(_groupControlId,true);
 };
-
-
-/*
-
-	Clear all waypoints
-
-*/
 
 AIC_fnc_clearAllWaypointsActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -113,13 +94,6 @@ AIC_fnc_clearAllWaypointsActionHandler = {
 	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 	hint ("All waypoints cleared");
 };
-
-
-/*
-
-	Combat mode
-
-*/
 
 AIC_fnc_setGroupCombatModeActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -147,14 +121,6 @@ AIC_fnc_forgetTargetsActionHandler = {
 	hint ("Group forgot all targets!");
 };
 
-
-
-/*
-
-	Behaviour
-
-*/
-
 AIC_fnc_setGroupBehaviourActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -164,6 +130,7 @@ AIC_fnc_setGroupBehaviourActionHandler = {
 	[_group,_mode] remoteExec ["setBehaviour", leader _group]; 
 	hint ("Behaviour set to '" + _mode + "'.");
 };
+
 AIC_fnc_setGroupAutoCombatActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -177,6 +144,7 @@ AIC_fnc_setGroupAutoCombatActionHandler = {
 	};
 	hint ("AutoCombat set to '" + _mode + "'.");
 };
+
 AIC_fnc_setGroupEnableAttackActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -190,13 +158,6 @@ AIC_fnc_setGroupEnableAttackActionHandler = {
 	};
 	hint ("Autonomous attacking set to '" + _mode + "'.");
 };
-
-
-/*
-
-	Formation & Speed
-
-*/
 	
 AIC_fnc_setGroupSpeedActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -217,13 +178,6 @@ AIC_fnc_setGroupFormationActionHandler = {
 	[_group,_mode] remoteExec ["setFormation", leader _group]; 
 	hint ("Formation set to '" + _mode + "'.");
 };
-
-
-/*
-
-	Fly in Height
-
-*/
 
 AIC_fnc_commandMenuIsAir = {
 	params ["_menuParams","_actionParams"];
@@ -258,14 +212,6 @@ AIC_fnc_setFlyInHeightGroupActionHandler = {
 	private _unit = ["m AGL", "m ASL"] select (_mode == "ASL");
 	hint ("Fly in height set to " + (str _result) + " " + _unit);
 };
-
-
-
-/*
-
-	Remote View & Control
-
-*/
 
 AIC_fnc_remoteViewActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -311,7 +257,6 @@ AIC_fnc_terminateRemoteView = {
 	[] call AIC_fnc_disable3rdPersonCamera;
 	["RemoteControl",["","Remote View Terminated"]] call BIS_fnc_showNotification;
 };
-
 
 AIC_fnc_remoteControlActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -371,14 +316,6 @@ AIC_fnc_terminateRemoteControl = {
 	["RemoteControl",["","Remote Control Terminated"]] call BIS_fnc_showNotification;
 };
 
-
-
-/*
-
-	Color
-
-*/
-
 AIC_fnc_setGroupColorActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -393,13 +330,6 @@ AIC_fnc_setGroupColorActionHandler = {
 	hint ("Color set to '" + (_color select 0) + "'.");
 };
 
-
-/*
-
-	Rename Group
-
-*/
-
 AIC_fnc_renameGroupActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -407,13 +337,6 @@ AIC_fnc_renameGroupActionHandler = {
 	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
 	[_group] spawn AIC_fnc_showRenameGroupDialog;
 };
-
-
-/*
-
-	Join / Split Group
-
-*/
 
 AIC_fnc_joinGroupActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -475,13 +398,6 @@ AIC_fnc_splitGroupUnitsActionHandler = {
 	hint ("Group Split into Individual Units");
 	
 };
-
-
-/*
-
-	Assign Vehicle
-
-*/
 
 AIC_fnc_assignVehicleActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -547,7 +463,6 @@ AIC_fnc_unassignVehicleActionHandler = {
 	hint ("All vehicles unassigned");
 };
 
-
 AIC_fnc_unloadOtherGroupsActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -571,14 +486,6 @@ AIC_fnc_unloadOtherGroupsActionHandler = {
 	} forEach ([_group] call AIC_fnc_getGroupAssignedVehicles);
 	hint ((str count _unloadedGroups) + " other group(s) unloaded");
 };
-
-
-
-/*
-
-	Land
-
-*/
 
 landActionScript = "
 private _msgSent = false;
@@ -630,7 +537,6 @@ AIC_fnc_landNowNearbyActionHandler = {
 	};
 };
 
-
 AIC_fnc_landNowPreciseActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -669,14 +575,6 @@ AIC_fnc_landNowPreciseActionHandler = {
 	};
 };
 
-
-
-/*
-
-	Rappel
-
-*/
-
 AIC_fnc_rappelActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
@@ -708,14 +606,6 @@ AIC_fnc_rappelActionHandler = {
 	};
 };
 
-
-
-/*
-
-	Waypoint Actions
-
-*/
-
 AIC_fnc_deleteWaypointHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId","_waypointId"];
@@ -724,7 +614,6 @@ AIC_fnc_deleteWaypointHandler = {
 	[_group,_waypointId] call AIC_fnc_deleteWaypoint;
 	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 };
-
 
 AIC_fnc_setWaypointFormationActionHandler = {
 	params ["_menuParams","_actionParams"];
@@ -778,7 +667,7 @@ AIC_fnc_setDefendWpTypeActionHandler = {
 		// Store defend parameters in the waypoint's statement field as a parseable string
 		// Format: "DEFEND_PARAMS:radius:threshold:patrol:hold"
 		// This is read by fn_commandControlManager when building the Arma waypoint
-_waypoint set [AIC_Waypoint_ArrayIndex_Statement, format ["DEFEND_PARAMS:%1:%2:%3:%4", _radius, _threshold, _patrolChance, _holdChance]];
+		_waypoint set [AIC_Waypoint_ArrayIndex_Statement, format ["DEFEND_PARAMS:%1:%2:%3:%4", _radius, _threshold, _patrolChance, _holdChance]];
 		_waypoint set [AIC_Waypoint_ArrayIndex_Type, _type];
 		[_group, _waypoint] call AIC_fnc_setWaypoint;
 		[_groupControlId, "REFRESH_WAYPOINTS", []] call AIC_fnc_groupControlEventHandler;
@@ -933,7 +822,6 @@ private _labelLandPrecise = "Land precisely (as close as possible)";
 	WP Type "Loiter"
 */
 
-
 // Wrapper for both AGL and ASL fly-in height — used as completion-statement snippet
 // in fn_commandControlManager.sqf (which embeds this function name as a string).
 // Internally calls AIC_fnc_applyFlyInHeight, which runs on the vehicle's owning machine.
@@ -974,8 +862,6 @@ AIC_fnc_setWaypointFlyInHeightActionHandler = {
 	private _unit = ["m AGL", "m ASL"] select (_mode == "ASL");
 	hint ("Waypoint fly in height set to " + (str _result) + " " + _unit);
 };
-
-
 
 AIC_fnc_setWaypointDurationActionHandler = {
 	params ["_menuParams","_actionParams"];
