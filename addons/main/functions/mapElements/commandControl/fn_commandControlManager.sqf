@@ -228,7 +228,7 @@ if (isServer) then {
 					if !(missionNamespace getVariable [format ["AIC_IsDefending_%1", groupId _group], false]) then {
 						_group setVariable ["AIC_IsDefending", false, true];
 					};
-					while { (count (waypoints _group)) > 0 } do {
+				while { (waypoints _group) isNotEqualTo [] } do {
 						deleteWaypoint ((waypoints _group) select 0);
 					};
 
@@ -368,7 +368,7 @@ if (isServer) then {
 						};
 					} forEach _groupControlWaypointArray;
 
-					if (count (waypoints _group)==0) then {
+				if ((waypoints _group) isEqualTo []) then {
 						_group addWaypoint [position leader _group, 0];
 					};
 					_group setVariable ["AIC_Server_Last_Wp_Revision", _currentWpRevision];

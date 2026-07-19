@@ -524,7 +524,7 @@ AIC_fnc_assignVehicleActionHandler = {
 		if(_selectedVehicle isKindOf "Air") then {
 			[_selectedVehicle,100] remoteExec ["flyInHeight", _selectedVehicle]; 
 		};
-		_vehicleName = getText (configFile >> "CfgVehicles" >> typeOf _selectedVehicle >> "displayName");
+	_vehicleName = getText (configOf _selectedVehicle >> "displayName");
 		hint ("Vehicle assigned: " + _vehicleName);
 	} else {
 		hint ("No vehicle assigned");

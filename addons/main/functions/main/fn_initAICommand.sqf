@@ -47,10 +47,10 @@ _commandersModules = allMissionObjects "AdvancedAICommand_Commanders";
 _groupsModules = allMissionObjects "AdvancedAICommand_Groups";
 
 _configurationMode = "ALL_COMMANDERS_ALL_GROUPS";
-if(count _commandersModules > 0) then {
+if(_commandersModules isNotEqualTo []) then {
 	[AIC_LOGLEVEL_INFO, "Found modules of type 'AdvancedAICommand_Commanders'. Will configure these commanders."] call AIC_fnc_log;
 
-	if(count _groupsModules > 0) then {
+	if(_groupsModules isNotEqualTo []) then {
 		[AIC_LOGLEVEL_INFO, "Found modules of type 'AdvancedAICommand_Groups'. Will assign the specific groups to the commanders."] call AIC_fnc_log;
 		_configurationMode = "SPECIFIED_COMMANDERS_SPECIFIED_GROUPS"
 	} else {

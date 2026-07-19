@@ -87,7 +87,7 @@
 	_vehInfo = "";
 	_vehCount = 0;
 	_result = [];
-	if (count _vehicles > 0) then {
+	if (_vehicles isNotEqualTo []) then {
 		//_vehInfo = "<t size='0.5' align='center' color='#ffffff'>----------------------------------------------------------------</t><br />";
 		_vehInfo = "";
 		{
@@ -106,7 +106,7 @@
 
 			_typeCount = {
 				_veh = _x;
-				_parents = ([configFile >> "cfgvehicles" >> typeOf _veh,true] call bis_fnc_returnParents) - [_class];
+			_parents = ([configOf _veh,true] call bis_fnc_returnParents) - [_class];
 
 				if (_veh isKindOf _class) then {
 					_limitValue = {_class isKindOf _x} count (_classes - [_class]);

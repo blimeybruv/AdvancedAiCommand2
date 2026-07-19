@@ -39,7 +39,7 @@ _support = 0;
 
 		//--- Vehicle is Tank
 		if (_veh isKindOf "tank") then {
-			if (getNumber(configFile >> "cfgvehicles" >> typeOf _veh >> "artilleryScanner") > 0) then
+		if (getNumber(configOf _veh >> "artilleryScanner") > 0) then
 			{
 				//--- Self-propelled artillery
 				_artys = _artys + 1;
@@ -79,10 +79,10 @@ _support = 0;
 		if (_veh isKindOf "boat") then {_boats = _boats + 1};
 
 		//--- Vehicle is support
-		_canHeal = getNumber (configFile >> "cfgvehicles" >> typeOf _veh >> "attendant") > 0;
-		_canReammo = getNumber (configFile >> "cfgvehicles" >> typeOf _veh >> "transportAmmo") > 0;
-		_canRefuel = getNumber (configFile >> "cfgvehicles" >> typeOf _veh >> "transportFuel") > 0;
-		_canRepair = getNumber (configFile >> "cfgvehicles" >> typeOf _veh >> "transportRepair") > 0;
+		_canHeal = getNumber (configOf _veh >> "attendant") > 0;
+		_canReammo = getNumber (configOf _veh >> "transportAmmo") > 0;
+		_canRefuel = getNumber (configOf _veh >> "transportFuel") > 0;
+		_canRepair = getNumber (configOf _veh >> "transportRepair") > 0;
 		if (_canHeal) then {_support_medic = _support_medic + 1};
 		if (_canReammo) then {_support_reammo = _support_reammo + 1};
 		if (_canRefuel) then {_support_refuel = _support_refuel + 1};
