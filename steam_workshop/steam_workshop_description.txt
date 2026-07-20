@@ -33,8 +33,8 @@
 [*][b]"Forget all targets"[/b] — instantly breaks squads out of chase loops or frozen-in-place bugs (Lambs_Danger compatibility fix).
 [*]5 combat modes: Never Fire, Fire At Will, Engage At Will ...
 [*]5 behaviour modes: Careless, Safe, Aware, Combat, Stealth
-[*][b]Autonomous Attacking toggle[/b] (enableAttack) — prevents squads from recklessly pushing into enemy positions. Perfect for holding defensive lines.
-[*][b]Auto Combat Mode toggle[/b] — prevent AI from auto-switching combat modes on contact.
+[*][b]Attacking toggle[/b] (enableAttack) — prevents squads from recklessly pushing into enemy positions. Perfect for holding defensive lines.
+[*][b]Auto Combat Mode toggle[/b] — prevent AI from auto-switching to combat mode on contact.
 [/list]
 
 [h2]🚁 Automated Helicopter Operations[/h2]
@@ -84,6 +84,7 @@
 [*]Click on the squad icon you want to command.
 [*]In the now open menu confirm the "Add Waypoints" action (default keybind: Enter or Space).
 [*]Click on the map to place a "move" waypoint. Click again for additional waypoints.
+[*]Use the menu on the top left to set options for the last placed waypoint (default keybind to confirm menu selection: Enter or Space).
 [*]Right-click to finish placing waypoints.
 [/olist]
 
