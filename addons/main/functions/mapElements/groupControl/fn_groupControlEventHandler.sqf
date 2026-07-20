@@ -110,7 +110,7 @@ if(isNil "_groupControlId") then {
 			private _lastWpId = _addedWaypoint select AIC_Waypoint_ArrayIndex_Index;
 			missionNamespace setVariable [format ["AIC_Group_Control_%1_Pending_Config_Wp",_groupControlId], _lastWpId];
 			if(_oldPendingWp == -1) then {
-				systemChat "[AAC2] - Waypoint added. Left-click to add another. Use the menu to configure the last added one. Right-click to finish. Delete a WP with the 'Delete' key while the mouse is above it.";
+				systemChat "[AAC2] - Waypoint added, use top-left menu to edit WP settings. Left-click to add another. Right-click to finish / close. Delete a WP with the 'Delete' key while the mouse is above it.";
 			};
 			// Close any open command menu first, then re-open with new wp data (prevents toggle-off behavior)
 			showCommandingMenu "";
