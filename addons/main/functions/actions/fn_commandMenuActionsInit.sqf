@@ -356,47 +356,97 @@ AIC_fnc_joinGroupActionHandler = {
 AIC_fnc_splitGroupHalfActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
-	private ["_group"];
-	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
-	_group2 = createGroup (side _group);
-	_joinNewGroup = false;
+
+	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	private _units = units _group;
+
+	if (count _units < 2) exitWith {
+		hint "This group is too small to be split.";
+	};
+
+	private _newGroup = createGroup [side _group, true];
+	if (isNull _newGroup) exitWith {
+		hint "Could not create a new group. The group limit for this side has been reached.";
+		[AIC_LOGLEVEL_ERROR, "AIC_fnc_splitGroupHalfActionHandler - createGroup returned grpNull."] call AIC_fnc_log;
+	};
+
+	// Collect the command controls the original group belongs to, so the new half can
+	// be registered with them right away (same as when splitting into individual units).
+	// Without this the new group only becomes commandable once the server's polling loop
+	// happens to pick it up, which is why half the squad appeared to be lost.
+	private _commandControls = AIC_fnc_getCommandControls();
+	private _commandControlsToUpdate = [];
 	{
-		if(_joinNewGroup) then {
-			[_x] joinSilent _group2;
-			_joinNewGroup = false;
-		} else {	
-			_joinNewGroup = true;
+		private _commandControlId = _x;
+		private _groups = AIC_fnc_getCommandControlGroups(_commandControlId);
+		if (_group in _groups) then {
+			_commandControlsToUpdate pushBack _commandControlId;
 		};
-	} forEach (units _group);
-	hint ("Group Split in Half");
+	} forEach _commandControls;
+
+	// Move every second unit into the new group. Index 0 is the group leader, so the
+	// original group keeps its leader and both halves end up roughly the same size.
+	private _unitsToMove = [];
+	{
+		if (_forEachIndex mod 2 == 1) then {
+			_unitsToMove pushBack _x;
+		};
+	} forEach _units;
+	_unitsToMove joinSilent _newGroup;
+
+	// Carry over the parent group's AAC2 colour and stance so the new half keeps
+	// behaving the same way until it is given orders of its own.
+	[_newGroup, [_group] call AIC_fnc_getGroupColor] call AIC_fnc_setGroupColor;
+	_newGroup setBehaviour (behaviour (leader _group));
+	_newGroup setCombatMode (combatMode _group);
+
+	{
+		[_x, _newGroup] call AIC_fnc_commandControlAddGroup;
+	} forEach _commandControlsToUpdate;
+
+	hint format ["Group split in half. New group: %1", groupId _newGroup];
 };
 
 AIC_fnc_splitGroupUnitsActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
 	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
-	
+	private _groupColor = [_group] call AIC_fnc_getGroupColor;
+	private _groupBehaviour = behaviour (leader _group);
+	private _groupCombatMode = combatMode _group;
+
 	// Find all command controls to update with new split groups
-	_commandControlsToUpdate = [];
-	_commandControls = AIC_fnc_getCommandControls();
+	private _commandControlsToUpdate = [];
+	private _commandControls = AIC_fnc_getCommandControls();
 	{
-		_commandControlId = _x;
-		_groups = AIC_fnc_getCommandControlGroups(_commandControlId);
+		private _commandControlId = _x;
+		private _groups = AIC_fnc_getCommandControlGroups(_commandControlId);
 		if(_group in _groups) then {
 			_commandControlsToUpdate pushBack _commandControlId;
 		};
 	} forEach _commandControls;
-	
+
 	{
-		_group = createGroup (side _x);
-		[_x] joinSilent _group;
+		private _unit = _x;
+		private _newGroup = createGroup [side _unit, true];
+		if (isNull _newGroup) exitWith {
+			hint "Could not create a new group. The group limit for this side has been reached.";
+			[AIC_LOGLEVEL_ERROR, "AIC_fnc_splitGroupUnitsActionHandler - createGroup returned grpNull."] call AIC_fnc_log;
+		};
+		[_unit] joinSilent _newGroup;
+
+		// Carry over the parent group's AAC2 colour and stance.
+		[_newGroup, _groupColor] call AIC_fnc_setGroupColor;
+		_newGroup setBehaviour _groupBehaviour;
+		_newGroup setCombatMode _groupCombatMode;
+
 		{
-			[_x,_group] call AIC_fnc_commandControlAddGroup;
+			[_x,_newGroup] call AIC_fnc_commandControlAddGroup;
 		} forEach _commandControlsToUpdate;
 	} forEach (units _group);
-	
+
 	hint ("Group Split into Individual Units");
-	
+
 };
 
 AIC_fnc_assignVehicleActionHandler = {
