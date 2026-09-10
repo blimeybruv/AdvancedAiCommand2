@@ -685,14 +685,52 @@ AIC_fnc_setWaypointTypeActionHandler = {
 	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
 	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
 
-	// "_actionParams" contains "_type", "_label"
-	_actionParams params ["_type",["_label", "ERROR LABEL UNDEFINED!"]];
+	// "_actionParams" contains "_type", "_label" and optionally "_note" (an extra
+	// explanation shown in side chat for waypoint types whose behaviour is not obvious)
+	_actionParams params ["_type",["_label", "ERROR LABEL UNDEFINED!"],["_note",""]];
 
 	_waypoint set [AIC_Waypoint_ArrayIndex_Type,_type];
 	[_group, _waypoint] call AIC_fnc_setWaypoint;
 	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
 
 	hint ("Type set to '" + _label + "'.");
+
+	if (_note != "") then {
+		systemChat ("[AAC2] - " + _note);
+	};
+};
+
+/*
+	Sets a waypoint to "CYCLE", which turns the group's waypoints into an endless patrol.
+
+	AAC2 normally disables each waypoint once the group has reached it. That would take
+	the loop apart after a single pass, so fn_commandControlManager keeps every waypoint
+	of a group active for as long as one of them is a cycle waypoint. The patrol then
+	runs until the player issues new orders, which rebuilds the waypoint list as usual.
+*/
+AIC_fnc_setWaypointTypeCycleActionHandler = {
+	params ["_menuParams","_actionParams"];
+	_menuParams params ["_groupControlId","_waypointId"];
+
+	private _group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+	private _waypoint = [_group, _waypointId] call AIC_fnc_getWaypoint;
+
+	_waypoint set [AIC_Waypoint_ArrayIndex_Type, "CYCLE"];
+	[_group, _waypoint] call AIC_fnc_setWaypoint;
+	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
+
+	hint "Type set to 'Cycle'.";
+
+	// Count every waypoint that still exists — waypoints being placed right now are
+	// "drafted" rather than "active", so getAllActiveWaypoints would under-count here.
+	private _waypointCount = count ((([_group] call AIC_fnc_getAllWaypoints) select 1) select {
+		(_x select AIC_Waypoint_ArrayIndex_State) != AIC_Waypoint_State_Deleted
+	});
+	if (_waypointCount < 2) then {
+		systemChat "[AAC2] - A cycle waypoint needs at least one other waypoint to loop back to. Place it next to the waypoint the patrol should return to.";
+	} else {
+		systemChat "[AAC2] - Cycle waypoint set. The group patrols its waypoints until you give it new orders.";
+	};
 };
 
 AIC_fnc_setDefendWpTypeActionHandler = {
@@ -752,8 +790,6 @@ AIC_fnc_setWaypointTypeUnloadActionHandler = {
 		case "UNLOAD": { hint "two"; };
 		default { };
 	};
-
-
 
 	_waypoint set [AIC_Waypoint_ArrayIndex_Type,_wpType];
 	[_group, _waypoint] call AIC_fnc_setWaypoint;
@@ -847,8 +883,6 @@ AIC_fnc_setLoiterTypeActionHandler = {
 	hint ("Type set to " + _loiterTypeLabel + " at " + str _radius + " meter radius");
 };
 
-
-
 /*
 	WP Type "Unload"
 */
@@ -866,6 +900,19 @@ private _labelUnloadOtherGroupPassengers = "Unload other groups passengers (not 
 */
 private _labelLandNearby = "Land nearby (search spot within 500m)";
 private _labelLandPrecise = "Land precisely (as close as possible)";
+
+
+/*
+	Labels and side-chat explanations for the additional waypoint types.
+	See https://community.bistudio.com/wiki/Waypoint_types
+*/
+private _labelWpSentry = "Sentry (wait, then engage on contact)";
+private _noteWpSentry = "Sentry: the group holds at the waypoint until it identifies an enemy, then engages and continues.";
+private _labelWpGuard = "Guard (take over a guard point)";
+private _noteWpGuard = "Guard: the group takes over the nearest free guard point, otherwise it holds this position. Guard points from 'Guarded by' triggers placed in the Eden 3D editor do not register (Arma bug T86121) - use the 2D editor or createGuardedPoint.";
+private _labelWpDismiss = "Dismiss (stand down, react on contact)";
+private _noteWpDismiss = "Dismiss: the group relaxes and wanders around the waypoint, but forms up again as soon as it makes contact.";
+private _labelWpCycle = "Cycle (loop waypoints as a patrol)";
 
 
 /*
@@ -933,6 +980,7 @@ AIC_fnc_setWaypointDurationActionHandler = {
 
 // Add Waypoints
 ["GROUP","Add Waypoints",[],AIC_fnc_addWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
+
 
 // Clear all waypoints
 ["GROUP","Confirm Clear All",["Clear All Waypoints"],AIC_fnc_clearAllWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
@@ -1079,12 +1127,23 @@ AIC_fnc_setWaypointDurationActionHandler = {
 // Add more Waypoints
 ["WAYPOINT","Add Waypoints",[],AIC_fnc_addWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
 
+
 // Set WP Type (General)
 ["WAYPOINT","Move (default)",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["MOVE","'Move'"]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Attack (CBA)",["Set Waypoint Type","Offensive WP Types"],AIC_fnc_setWaypointAttackActionHandler,[]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Seek & Destroy",["Set Waypoint Type","Offensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["SAD","'Seek & Destroy'"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelWpSentry,["Set Waypoint Type","Offensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["SENTRY","'Sentry'",_noteWpSentry]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Defend - Garrison / Patrol (CBA)",["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setDefendWpTypeActionHandler,["DEFEND","'Defend - Garrison / Patrol (CBA)'"]] call AIC_fnc_addCommandMenuAction;
 ["WAYPOINT","Hold",["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["HOLD","'Hold'"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelWpGuard,["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["GUARD","'Guard'",_noteWpGuard]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelWpDismiss,["Set Waypoint Type","Defensive WP Types"],AIC_fnc_setWaypointTypeActionHandler,["DISMISS","'Dismiss'",_noteWpDismiss]] call AIC_fnc_addCommandMenuAction;
+
+// Set WP Type "Cycle" - turns the group's waypoints into an endless patrol
+["WAYPOINT",_labelWpCycle,["Set Waypoint Type","Special WP Types"],AIC_fnc_setWaypointTypeCycleActionHandler,[]] call AIC_fnc_addCommandMenuAction;
+
+// Deliberately not offered: "GETIN" / "GETIN NEAREST" duplicate (and get in the way of)
+// the existing "Assign Vehicle" action, and "SUPPORT" is unreliable in Arma 3 itself.
+// See the pull request description for the details.
 
 // Delete WP
 ["WAYPOINT","Delete Waypoint",[],AIC_fnc_deleteWaypointHandler] call AIC_fnc_addCommandMenuAction;
