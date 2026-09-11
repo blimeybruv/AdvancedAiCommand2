@@ -76,9 +76,19 @@ AIC_fnc_isDefending = {
 AIC_fnc_addWaypointsActionHandler = {
 	params ["_menuParams","_actionParams"];
 	_menuParams params ["_groupControlId"];
-	private ["_group"];
-	_group = [_groupControlId] call AIC_fnc_getGroupControlGroup;
+
+	// "_actionParams" optionally contains "_type" and "_label". When they are omitted
+	// (the plain "Add Waypoints" entry) waypoints are placed as "MOVE", as before.
+	// When they are given, every waypoint placed during this session gets that type
+	// straight away, instead of having to re-open each waypoint to change it.
+	_actionParams params [["_type","MOVE"],["_label","Move"]];
+
+	AIC_fnc_setGroupControlAddWaypointType(_groupControlId,_type);
 	AIC_fnc_setGroupControlAddingWaypoints(_groupControlId,true);
+
+	if (_type != "MOVE") then {
+		systemChat format ["[AAC2] - Placing '%1' waypoints. Every waypoint you add now uses this type. Right-click to finish.", _label];
+	};
 };
 
 AIC_fnc_clearAllWaypointsActionHandler = {
@@ -791,6 +801,8 @@ AIC_fnc_setWaypointTypeUnloadActionHandler = {
 		default { };
 	};
 
+
+
 	_waypoint set [AIC_Waypoint_ArrayIndex_Type,_wpType];
 	[_group, _waypoint] call AIC_fnc_setWaypoint;
 	[_groupControlId,"REFRESH_WAYPOINTS",[]] call AIC_fnc_groupControlEventHandler;
@@ -882,6 +894,8 @@ AIC_fnc_setLoiterTypeActionHandler = {
 	};
 	hint ("Type set to " + _loiterTypeLabel + " at " + str _radius + " meter radius");
 };
+
+
 
 /*
 	WP Type "Unload"
@@ -981,6 +995,15 @@ AIC_fnc_setWaypointDurationActionHandler = {
 // Add Waypoints
 ["GROUP","Add Waypoints",[],AIC_fnc_addWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
 
+// Add Waypoints of a given type directly, without having to re-open every waypoint
+// afterwards to change its type ("Add Advanced WP", requested in issue #27).
+["GROUP","Move",["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["MOVE","Move"]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Seek & Destroy",["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["SAD","Seek & Destroy"]] call AIC_fnc_addCommandMenuAction;
+["GROUP","Hold",["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["HOLD","Hold"]] call AIC_fnc_addCommandMenuAction;
+["GROUP",_labelWpSentry,["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["SENTRY","Sentry"]] call AIC_fnc_addCommandMenuAction;
+["GROUP",_labelWpGuard,["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["GUARD","Guard"]] call AIC_fnc_addCommandMenuAction;
+["GROUP",_labelWpDismiss,["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["DISMISS","Dismiss"]] call AIC_fnc_addCommandMenuAction;
+["GROUP",_labelWpCycle,["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["CYCLE","Cycle"]] call AIC_fnc_addCommandMenuAction;
 
 // Clear all waypoints
 ["GROUP","Confirm Clear All",["Clear All Waypoints"],AIC_fnc_clearAllWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
@@ -1127,6 +1150,14 @@ AIC_fnc_setWaypointDurationActionHandler = {
 // Add more Waypoints
 ["WAYPOINT","Add Waypoints",[],AIC_fnc_addWaypointsActionHandler] call AIC_fnc_addCommandMenuAction;
 
+// Add more Waypoints of a given type (see the identical GROUP menu entries above)
+["WAYPOINT","Move",["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["MOVE","Move"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Seek & Destroy",["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["SAD","Seek & Destroy"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT","Hold",["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["HOLD","Hold"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelWpSentry,["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["SENTRY","Sentry"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelWpGuard,["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["GUARD","Guard"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelWpDismiss,["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["DISMISS","Dismiss"]] call AIC_fnc_addCommandMenuAction;
+["WAYPOINT",_labelWpCycle,["Add Waypoints (Advanced)"],AIC_fnc_addWaypointsActionHandler,["CYCLE","Cycle"]] call AIC_fnc_addCommandMenuAction;
 
 // Set WP Type (General)
 ["WAYPOINT","Move (default)",["Set Waypoint Type"],AIC_fnc_setWaypointTypeActionHandler,["MOVE","'Move'"]] call AIC_fnc_addCommandMenuAction;
